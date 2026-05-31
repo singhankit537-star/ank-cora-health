@@ -43,10 +43,22 @@ export const primaryNav = [
       'Pay Bill',
     ],
   },
+]
+
+// Shown in the navy top bar (top-right corner).
+export const topNav = [
   {
     label: 'About',
     href: '#about',
-    children: ['Leadership Team', 'Mission + Values', 'Physicians', 'Partnerships'],
+    children: [
+      'Leadership Team',
+      'Mission + Values',
+      'Experience the Difference',
+      'Physicians',
+      'Partnerships',
+      "MSA's",
+      'Acquisition Opportunities',
+    ],
   },
   {
     label: 'Resources',
@@ -63,9 +75,6 @@ export const primaryNav = [
       'Student Services',
     ],
   },
-]
-
-export const utilityNav = [
   { label: 'Locations', href: '#locations' },
   { label: 'Pay Bill', href: '#pay-bill' },
   { label: 'Apply Now', href: '#apply', highlight: true },

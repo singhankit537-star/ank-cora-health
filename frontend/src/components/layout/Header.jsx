@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { primaryNav, utilityNav } from '../../data/navigation'
+import { primaryNav, topNav } from '../../data/navigation'
 import Button from '../ui/Button'
 import Container from '../ui/Container'
 import NavDropdown from './NavDropdown'
@@ -66,20 +66,6 @@ export default function Header() {
                 items={item.children}
               />
             ))}
-            {utilityNav.map((item) => (
-              <li key={item.label}>
-                <a
-                  href={item.href}
-                  className={`block px-3 py-4 text-sm font-medium transition-colors ${
-                    item.highlight
-                      ? 'text-cora-orange hover:text-orange-600'
-                      : 'text-cora-navy hover:text-cora-blue'
-                  }`}
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))}
           </ul>
         </Container>
       </nav>
@@ -99,7 +85,7 @@ function MobileNav({ onClose }) {
     >
       <Container className="max-h-[70vh] overflow-y-auto py-4">
         <ul className="space-y-1">
-          {[...primaryNav, ...utilityNav].map((item) => (
+          {[...primaryNav, ...topNav].map((item) => (
             <li key={item.label}>
               <a
                 href={item.href}

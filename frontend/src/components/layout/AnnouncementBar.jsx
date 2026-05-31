@@ -1,4 +1,6 @@
+import { topNav } from '../../data/navigation'
 import Container from '../ui/Container'
+import TopNavDropdown from './TopNavDropdown'
 
 export default function AnnouncementBar({
   message = 'From new grads to seasoned pros, your next move starts here.',
@@ -9,7 +11,7 @@ export default function AnnouncementBar({
   return (
     <div className="bg-cora-navy text-white">
       <Container className="flex items-center justify-between gap-4 py-2.5 text-sm">
-        <p className="flex-1 text-center sm:text-left">
+        <p className="text-center sm:text-left">
           {message}{' '}
           <a
             href={linkHref}
@@ -18,6 +20,22 @@ export default function AnnouncementBar({
             {linkText}
           </a>
         </p>
+
+        {/* Utility links moved up to the top-right corner */}
+        <nav aria-label="Utility navigation" className="hidden lg:block">
+          <ul className="flex items-center gap-5">
+            {topNav.map((item) => (
+              <TopNavDropdown
+                key={item.label}
+                label={item.label}
+                href={item.href}
+                items={item.children}
+                highlight={item.highlight}
+              />
+            ))}
+          </ul>
+        </nav>
+
         {onClose && (
           <button
             type="button"
