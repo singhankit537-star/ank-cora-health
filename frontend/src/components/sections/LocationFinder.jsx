@@ -1,4 +1,11 @@
-import { useState } from 'react'
+import {
+  searchComplete,
+  setQuery,
+  setRadius,
+  setResultsLimit,
+  startSearch,
+} from '../../store/slices/locationSlice'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import Button from '../ui/Button'
 import Container from '../ui/Container'
 import Input from '../ui/Input'
@@ -23,20 +30,22 @@ const resultOptions = [
 ]
 
 export default function LocationFinder() {
-  const [zip, setZip] = useState('')
+  const dispatch = useAppDispatch()
+  const { query, radius, resultsLimit, isSearching } = useAppSelector(
+    (state) => state.location,
+  )
 
   const handleSearch = (e) => {
     e.preventDefault()
+    dispatch(startSearch())
     // Placeholder for location API integration
+    dispatch(searchComplete())
   }
 
   return (
     <section id="locations" className="bg-cora-light py-16 lg:py-24">
       <Container>
-        <SectionHeading
-          title="Find A Location Near You"
-          className="mb-10"
-        />
+        <SectionHeading title="Find A Location Near You" className="mb-10" />
 
         <form
           onSubmit={handleSearch}
@@ -46,24 +55,31 @@ export default function LocationFinder() {
             <Input
               label="ZIP or City"
               placeholder="Enter ZIP or city"
-              value={zip}
-              onChange={(e) => setZip(e.target.value)}
+              value={query}
+              onChange={(e) => dispatch(setQuery(e.target.value))}
               wrapperClassName="sm:col-span-2 lg:col-span-2"
             />
             <Select
               label="Search radius"
               options={radiusOptions}
-              defaultValue="50"
+              value={radius}
+              onChange={(e) => dispatch(setRadius(e.target.value))}
             />
             <Select
               label="Results"
               options={resultOptions}
-              defaultValue="8"
+              value={resultsLimit}
+              onChange={(e) => dispatch(setResultsLimit(e.target.value))}
             />
           </div>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
-            <Button type="submit" variant="secondary" size="lg">
-              Search Locations
+            <Button
+              type="submit"
+              variant="secondary"
+              size="lg"
+              disabled={isSearching}
+            >
+              {isSearching ? 'Searching…' : 'Search Locations'}
             </Button>
             <Button variant="ghost" href="#all-locations">
               See All Locations

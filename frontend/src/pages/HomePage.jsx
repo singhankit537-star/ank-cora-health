@@ -1,4 +1,4 @@
-import AnnouncementBar from '../components/layout/AnnouncementBar'
+import AnnouncementBarConnected from '../components/layout/AnnouncementBarConnected'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
 import CareerSection from '../components/sections/CareerSection'
@@ -18,7 +18,7 @@ export default function HomePage() {
       >
         Skip to main content
       </a>
-      <AnnouncementBar />
+      <AnnouncementBarConnected />
       <Header />
       <main id="main">
         <Hero />
