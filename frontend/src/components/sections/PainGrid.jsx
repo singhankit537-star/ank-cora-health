@@ -25,10 +25,10 @@ export default function PainGrid() {
   )
 }
 
-function PainCard({ title, image, id }) {
+function PainCard({ title, image, slug }) {
   return (
     <a
-      href={`#${id}`}
+      href={`#condition/${slug}`}
       className="group relative overflow-hidden rounded-lg shadow-md transition-transform hover:-translate-y-1 hover:shadow-xl"
     >
       <img

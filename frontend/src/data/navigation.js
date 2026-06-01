@@ -1,22 +1,11 @@
+import { treatMenu } from './conditions'
+
 export const primaryNav = [
   {
     label: 'What We Treat',
     href: '#treat',
-    children: [
-      'Neck',
-      'Shoulder',
-      'Elbow',
-      'Wrist/Hand',
-      'Back',
-      'Low back pain/Sciatica',
-      'Knee',
-      'Ankle',
-      'Foot',
-      'Hip',
-      'Pregnancy/Post-Partum',
-      'Headaches/Migraines',
-      'Dizziness/Vertigo',
-    ],
+    // Built from the conditions data so menu + routing stay in sync.
+    children: treatMenu.map((t) => ({ label: t.label, href: `#condition/${t.slug}` })),
   },
   {
     label: 'How We Can Help',
@@ -51,7 +40,7 @@ export const topNav = [
     label: 'About',
     href: '#about',
     children: [
-      'Leadership Team',
+      { label: 'Leadership Team', href: '#leadership' },
       'Mission + Values',
       'Experience the Difference',
       'Physicians',

@@ -21,16 +21,20 @@ export default function NavDropdown({ label, href, items = [] }) {
       {items.length > 0 && open && (
         <div className="absolute left-0 top-full z-50 min-w-[220px] rounded-md border border-gray-100 bg-white py-2 shadow-xl">
           <ul>
-            {items.map((item) => (
-              <li key={item}>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-cora-sky hover:text-cora-blue"
-                >
-                  {item}
-                </a>
-              </li>
-            ))}
+            {items.map((item) => {
+              const label = typeof item === 'string' ? item : item.label
+              const itemHref = typeof item === 'string' ? '#' : item.href
+              return (
+                <li key={label}>
+                  <a
+                    href={itemHref}
+                    className="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-cora-sky hover:text-cora-blue"
+                  >
+                    {label}
+                  </a>
+                </li>
+              )
+            })}
           </ul>
         </div>
       )}

@@ -47,13 +47,16 @@ export default function TopNavDropdown({ label, href, items = [], highlight = fa
           <div className="w-64 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black/5">
             <div className="h-1 bg-gradient-to-r from-cora-blue via-cora-teal to-cora-orange" />
             <ul className="p-2">
-              {items.map((item) => (
-                <li key={item}>
+              {items.map((item) => {
+                const label = typeof item === 'string' ? item : item.label
+                const itemHref = typeof item === 'string' ? '#' : item.href
+                return (
+                <li key={label}>
                   <a
-                    href="#"
+                    href={itemHref}
                     className="group flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-cora-navy transition-colors hover:bg-cora-sky hover:text-cora-blue"
                   >
-                    {item}
+                    {label}
                     <svg
                       className="h-4 w-4 -translate-x-1 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100"
                       fill="none"
@@ -66,7 +69,8 @@ export default function TopNavDropdown({ label, href, items = [], highlight = fa
                     </svg>
                   </a>
                 </li>
-              ))}
+                )
+              })}
             </ul>
           </div>
         </div>
