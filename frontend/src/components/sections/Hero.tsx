@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
-import Button from '../ui/Button'
-import Container from '../ui/Container'
+import { Button } from '../ui/Button'
+import { Container } from '../ui/Container'
 import TriangleAccent from '../ui/TriangleAccent'
 import ImageCarousel from '../ui/ImageCarousel'
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver'

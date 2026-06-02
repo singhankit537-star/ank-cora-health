@@ -1,6 +1,6 @@
-import Button from '../ui/Button'
-import Container from '../ui/Container'
-import SectionHeading from '../ui/SectionHeading'
+import { Button } from '../ui/Button'
+import { Container } from '../ui/Container'
+import { SectionHeading } from '../ui/SectionHeading'
 
 const referralPoints = [
   {

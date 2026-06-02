@@ -1,7 +1,7 @@
 import { newsArticles } from '../../data/news'
-import Card from '../ui/Card'
-import Container from '../ui/Container'
-import SectionHeading from '../ui/SectionHeading'
+import { Card } from '../ui/Card'
+import { Container } from '../ui/Container'
+import { SectionHeading } from '../ui/SectionHeading'
 import TriangleAccent from '../ui/TriangleAccent'
 
 export default function NewsSection() {

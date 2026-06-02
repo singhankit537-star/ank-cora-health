@@ -1,5 +1,5 @@
 import { topNav } from '../../data/navigation'
-import Container from '../ui/Container'
+import { Container } from '../ui/Container'
 import TopNavDropdown from './TopNavDropdown'
 
 export default function AnnouncementBar({

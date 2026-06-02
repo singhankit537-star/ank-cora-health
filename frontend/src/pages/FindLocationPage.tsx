@@ -1,8 +1,8 @@
 import { Suspense, lazy, useMemo, useState } from 'react'
 import AnnouncementBar from '../components/layout/AnnouncementBar'
-import Footer from '../components/layout/Footer'
-import Header from '../components/layout/Header'
-import Container from '../components/ui/Container'
+import { Footer } from '../components/layout/Footer'
+import { Header } from '../components/layout/Header'
+import { Container } from '../components/ui/Container'
 import { clinics, locationStates } from '../data/locations'
 
 // Leaflet is a heavy dependency (map engine + CSS), so the map is split into

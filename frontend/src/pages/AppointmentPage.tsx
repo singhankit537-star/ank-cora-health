@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import AnnouncementBar from '../components/layout/AnnouncementBar'
-import Footer from '../components/layout/Footer'
-import Header from '../components/layout/Header'
-import Container from '../components/ui/Container'
+import { Footer } from '../components/layout/Footer'
+import { Header } from '../components/layout/Header'
+import { Container } from '../components/ui/Container'
 
 const TEAM_IMAGE =
   'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?auto=format&fit=crop&q=80&w=900'

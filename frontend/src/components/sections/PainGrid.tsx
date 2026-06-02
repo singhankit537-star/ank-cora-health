@@ -1,7 +1,7 @@
 import { painAreas } from '../../data/painAreas'
-import Button from '../ui/Button'
-import Container from '../ui/Container'
-import SectionHeading from '../ui/SectionHeading'
+import { Button } from '../ui/Button'
+import { Container } from '../ui/Container'
+import { SectionHeading } from '../ui/SectionHeading'
 
 export default function PainGrid() {
   return (
