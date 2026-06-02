@@ -31,7 +31,7 @@ type PainCardProps = Pick<PainArea, 'title' | 'image' | 'slug'>
 function PainCard({ title, image, slug }: PainCardProps) {
   return (
     <a
-      href={`#condition/${slug}`}
+      href={`/condition/${slug}`}
       className="group relative overflow-hidden rounded-lg shadow-md transition-transform hover:-translate-y-1 hover:shadow-xl"
     >
       <img

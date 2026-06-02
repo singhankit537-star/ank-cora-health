@@ -5,9 +5,69 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Physical Therapy for Everyone | CORA Physical Therapy</title>
+
+    <!--
+      LCP preload: hero carousel slide 1.
+      Two hints — one for mobile (≤1023px, 100vw → fetch 480px asset),
+      one for desktop (≥1024px, 50vw → fetch 800px asset).
+      fetchpriority="high" promotes both above all other network requests.
+      Update these URLs whenever HERO_IMAGES[0].src changes in Hero.tsx.
+    -->
+    <link
+      rel="preload"
+      as="image"
+      fetchpriority="high"
+      href="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&q=75&w=480"
+      imagesrcset="
+        https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&q=75&w=480 480w,
+        https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&q=75&w=800 800w,
+        https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&q=75&w=1200 1200w
+      "
+      imagesizes="(min-width: 1024px) 50vw, 100vw"
+      media="(max-width: 1023px)"
+    />
+    <link
+      rel="preload"
+      as="image"
+      fetchpriority="high"
+      href="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&q=75&w=800"
+      imagesrcset="
+        https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&q=75&w=800  800w,
+        https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&q=75&w=1200 1200w
+      "
+      imagesizes="50vw"
+      media="(min-width: 1024px)"
+    />
   </head>
   <body>
-    <div id="root"></div>
+    <!--
+      Static shell loader — visible immediately when the HTML arrives, before
+      any JavaScript runs. React replaces this content when it mounts.
+      Inline styles + keyframe are intentional (no external CSS dependency).
+    -->
+    <div id="root">
+      <style>
+        @keyframes _spin { to { transform: rotate(360deg) } }
+        #_shell-loader {
+          display: grid;
+          place-items: center;
+          min-height: 100svh;
+          background: #fff;
+          font-family: system-ui, sans-serif;
+        }
+        #_shell-loader div {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          border: 4px solid #e0f2fe;
+          border-top-color: #0369a1;
+          animation: _spin 0.75s linear infinite;
+        }
+      </style>
+      <div id="_shell-loader" aria-label="Loading…" role="status">
+        <div></div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

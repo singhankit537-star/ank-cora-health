@@ -3,7 +3,6 @@ import Container from '../ui/Container'
 import TriangleAccent from '../ui/TriangleAccent'
 import ImageCarousel from '../ui/ImageCarousel'
 import type { CarouselImage } from '../ui/ImageCarousel'
-import { useIntersectionObserver } from '../../hooks/useIntersectionObserver'
 
 interface HeroProps {
   title?: string
@@ -13,21 +12,23 @@ interface HeroProps {
 
 // Add / remove / reorder hero slides here — each item is { src, alt }.
 // Use Unsplash URLs with `auto=format&fit=crop&q=80` so responsive widths work.
+// Base URLs intentionally omit &w= so ImageCarousel can build a correct srcSet
+// for each breakpoint. Do not append &w= here.
 const HERO_IMAGES: CarouselImage[] = [
   {
-    src: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&q=80',
+    src: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&q=75',
     alt: 'Physical therapist guiding a patient through rehabilitation exercises',
   },
   {
-    src: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80',
+    src: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=75',
     alt: 'Clinician reviewing a treatment plan with a patient',
   },
   {
-    src: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&q=80',
+    src: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&q=75',
     alt: 'Therapist assisting with strength and mobility training',
   },
   {
-    src: 'https://images.unsplash.com/photo-1597764690523-15bea4c581c9?auto=format&fit=crop&q=80',
+    src: 'https://images.unsplash.com/photo-1597764690523-15bea4c581c9?auto=format&fit=crop&q=75',
     alt: 'Hands-on physical therapy session in a modern clinic',
   },
 ]
@@ -37,17 +38,8 @@ export default function Hero({
   subtitle = 'With 250+ Physical Therapy and Rehabilitation Clinics, Find Care or a Career Close By.',
   images = HERO_IMAGES,
 }: HeroProps) {
-  // Lazy load carousel when hero section comes into view
-  const [ref, isVisible] = useIntersectionObserver<HTMLElement>({
-    threshold: 0.1,
-    rootMargin: '200px', // Start loading 200px before the section is visible
-    once: true,
-  })
   return (
-    <section
-      ref={ref}
-      className="relative overflow-hidden bg-gradient-to-br from-cora-sky via-white to-white"
-    >
+    <section className="relative overflow-hidden bg-gradient-to-br from-cora-sky via-white to-white">
       <Container className="grid items-center gap-10 py-12 sm:gap-12 lg:grid-cols-2 lg:py-24">
         <div className="order-2 lg:order-1">
           <h1 className="text-4xl font-bold leading-[1.05] tracking-tight text-cora-navy sm:text-5xl lg:text-6xl xl:text-7xl">
@@ -72,15 +64,7 @@ export default function Hero({
               aria-hidden="true"
               className="absolute -right-4 -top-4 -z-10 hidden h-full w-full rounded-3xl bg-cora-sky lg:block"
             />
-            {/* Lazy load carousel when section is visible */}
-            {isVisible ? (
-              <ImageCarousel images={images} interval={4000} />
-            ) : (
-              <div className="relative mx-auto max-w-md lg:max-w-none rounded-3xl shadow-2xl ring-1 ring-cora-navy/5 overflow-hidden">
-                {/* Loading skeleton placeholder */}
-                <div className="aspect-[4/3] w-full animate-pulse bg-gradient-to-br from-cora-sky/50 to-cora-sky/30" />
-              </div>
-            )}
+            <ImageCarousel images={images} interval={4000} prioritizeFirst />
           </div>
         </div>
       </Container>

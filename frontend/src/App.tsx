@@ -1,15 +1,19 @@
-import { Suspense, lazy, useEffect, useState } from 'react'
+import { Suspense, lazy, useEffect, useState, useTransition } from 'react'
 
-// Route-level code splitting: each page ships as its own chunk and is only
-// fetched when the user navigates to it, shrinking the initial bundle.
-const HomePage = lazy(() => import('./pages/HomePage'))
+// HomePage and ConditionPage are direct-landing destinations (root URL + search
+// traffic). They ship in the main bundle so there is zero extra network
+// round-trip before the LCP element can be painted.
+import HomePage from './pages/HomePage'
+import ConditionPage from './pages/ConditionPage'
+
+// These pages are only ever reached by navigating *within* the SPA, so the
+// lazy chunk fetch is hidden behind startTransition — no visible delay.
 const AppointmentPage = lazy(() => import('./pages/AppointmentPage'))
-const ConditionPage = lazy(() => import('./pages/ConditionPage'))
 const FindLocationPage = lazy(() => import('./pages/FindLocationPage'))
 const LeadershipPage = lazy(() => import('./pages/LeadershipPage'))
 
 function getRoute(): string {
-  return window.location.hash.replace(/^#\/?/, '')
+  return window.location.pathname.replace(/^\//, '')
 }
 
 // Full-screen fallback shown while a page chunk is being fetched.
@@ -38,14 +42,40 @@ function renderRoute(route: string) {
 
 export default function App() {
   const [route, setRoute] = useState(getRoute())
+  const [, startTransition] = useTransition()
 
   useEffect(() => {
-    const onHashChange = () => {
-      setRoute(getRoute())
+    // Handle browser back/forward navigation
+    const onPopState = () => {
+      startTransition(() => setRoute(getRoute()))
       window.scrollTo(0, 0)
     }
-    window.addEventListener('hashchange', onHashChange)
-    return () => window.removeEventListener('hashchange', onHashChange)
+    window.addEventListener('popstate', onPopState)
+
+    // Intercept clicks on internal links so they use pushState instead of a full page load
+    const handleClick = (e: MouseEvent) => {
+      const anchor = (e.target as Element).closest('a')
+      if (!anchor) return
+      const href = anchor.getAttribute('href')
+      if (
+        !href ||
+        href.startsWith('#') ||
+        href.startsWith('http') ||
+        href.startsWith('//') ||
+        href.startsWith('tel:') ||
+        href.startsWith('mailto:')
+      ) return
+      e.preventDefault()
+      window.history.pushState(null, '', href)
+      startTransition(() => setRoute(getRoute()))
+      window.scrollTo(0, 0)
+    }
+    document.addEventListener('click', handleClick)
+
+    return () => {
+      window.removeEventListener('popstate', onPopState)
+      document.removeEventListener('click', handleClick)
+    }
   }, [])
 
   return <Suspense fallback={<PageFallback />}>{renderRoute(route)}</Suspense>

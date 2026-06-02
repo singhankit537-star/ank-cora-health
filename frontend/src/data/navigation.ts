@@ -21,7 +21,7 @@ export const primaryNav: NavItem[] = [
     label: 'What We Treat',
     href: '#treat',
     // Built from the conditions data so menu + routing stay in sync.
-    children: treatMenu.map((t) => ({ label: t.label, href: `#condition/${t.slug}` })),
+    children: treatMenu.map((t) => ({ label: t.label, href: `/condition/${t.slug}` })),
   },
   {
     label: 'How We Can Help',
@@ -56,7 +56,7 @@ export const topNav: NavItem[] = [
     label: 'About',
     href: '#about',
     children: [
-      { label: 'Leadership Team', href: '#leadership' },
+      { label: 'Leadership Team', href: '/leadership' },
       'Mission + Values',
       'Experience the Difference',
       'Physicians',
@@ -80,7 +80,7 @@ export const topNav: NavItem[] = [
       'Student Services',
     ],
   },
-  { label: 'Locations', href: '#locations' },
+  { label: 'Locations', href: '/locations' },
   { label: 'Pay Bill', href: '#pay-bill' },
   { label: 'Apply Now', href: '#apply', highlight: true },
 ]

@@ -10,6 +10,8 @@ interface ImageCarouselProps {
   interval?: number
   autoPlay?: boolean
   sizes?: string
+  /** Set fetchpriority="high" on the first slide — use when the carousel is the LCP element */
+  prioritizeFirst?: boolean
 }
 
 /**
@@ -31,6 +33,7 @@ export default function ImageCarousel({
   interval = 4000,
   autoPlay = true,
   sizes = '(min-width: 1024px) 50vw, 100vw',
+  prioritizeFirst = false,
 }: ImageCarouselProps) {
   const [current, setCurrent] = useState(0)
   const [paused, setPaused] = useState(false)
@@ -76,25 +79,44 @@ export default function ImageCarousel({
       >
         {images.map((img, i) => {
           const isLoaded = loadedImages.has(i)
-          // Preload current, next, and previous images
-          const shouldPreload = Math.abs(i - current) <= 1
-          const loadingStrategy = i === 0 ? 'eager' : shouldPreload ? 'eager' : 'lazy'
+          // Only load slide 0 eagerly; all others are lazy to save bandwidth on slow connections.
+          // Slide 1 will start loading as soon as the user advances (auto-play pre-fetches it
+          // via the browser's idle bandwidth after the LCP is complete).
+          const isFirst = i === 0
+          const loadingStrategy: 'eager' | 'lazy' = isFirst ? 'eager' : 'lazy'
+
+          // Unsplash serves AVIF/WebP automatically via Accept-header negotiation
+          // when auto=format is in the URL — no need for explicit <picture> sources.
+          // Using a single <img> ensures the preload URL in index.html matches
+          // exactly (same URL = browser reuses the preloaded response, no double-fetch).
+          // img.src must NOT already contain &w= to avoid duplicate params.
+          const srcSet = [480, 800, 1200]
+            .map((w) => `${img.src}&w=${w} ${w}w`)
+            .join(', ')
 
           return (
             <div key={img.src} className="relative w-full shrink-0">
-              {/* Skeleton loader shown while image is loading */}
-              {!isLoaded && (
+              {/* Skeleton shown while non-first slides haven't loaded */}
+              {!isLoaded && !isFirst && (
                 <div className="absolute inset-0 aspect-[4/3] animate-pulse bg-cora-sky/30" />
               )}
+              {/*
+                Explicit width/height (4:3 ratio) prevents CLS before Tailwind
+                CSS loads. decoding="sync" on slide 0 avoids a rAF delay before paint.
+              */}
               <img
-                src={img.src}
-                srcSet={`${img.src}&w=480 480w, ${img.src}&w=800 800w, ${img.src}&w=1200 1200w`}
+                src={`${img.src}&w=800`}
+                srcSet={srcSet}
                 sizes={sizes}
                 alt={img.alt}
+                width={800}
+                height={600}
                 loading={loadingStrategy}
+                fetchPriority={isFirst && prioritizeFirst ? 'high' : 'auto'}
+                decoding={isFirst ? 'sync' : 'async'}
                 onLoad={() => handleImageLoad(i)}
-                className={`aspect-[4/3] w-full object-cover transition-opacity ${
-                  isLoaded ? 'opacity-100' : 'opacity-0'
+                className={`aspect-[4/3] w-full object-cover ${
+                  isFirst ? '' : `transition-opacity ${isLoaded ? 'opacity-100' : 'opacity-0'}`
                 }`}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-cora-navy/40 via-transparent to-transparent" />

@@ -4,8 +4,9 @@
 // To add a new condition: add an object below and it automatically appears in
 // the "What We Treat" menu (order here = order in the menu).
 
+// Intentionally omits &w= so callers can append the correct width for their context.
 const img = (id: string): string =>
-  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&q=80&w=1400`
+  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&q=75`
 
 export interface Condition {
   slug: string

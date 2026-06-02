@@ -44,9 +44,16 @@ function ConditionContent({ condition }: { condition: Condition }) {
         <Container>
           <div className="relative overflow-hidden rounded-2xl shadow-xl">
             <img
-              src={heroImage}
+              src={`${heroImage}&w=960`}
+              srcSet={`${heroImage}&w=480 480w, ${heroImage}&w=960 960w, ${heroImage}&w=1400 1400w`}
+              sizes="(min-width: 1024px) calc(100vw - 4rem), 100vw"
               alt={`${name} physical therapy`}
+              width={960}
+              height={384}
               className="h-56 w-full object-cover sm:h-72 lg:h-96"
+              fetchPriority="high"
+              loading="eager"
+              decoding="sync"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-cora-navy/40 to-transparent" />
           </div>
