@@ -1,11 +1,7 @@
-/**
- * UI components index
- * Export all UI components
- */
-
-export { Button } from './Button';
-export { Card } from './Card';
-export { Input } from './Input';
-export { Container } from './Container';
-export { SectionHeading } from './SectionHeading';
-export { Select } from './Select';
+export { default as Button } from './Button'
+export { default as Card } from './Card'
+export { default as Container } from './Container'
+export { default as Input } from './Input'
+export { default as SectionHeading } from './SectionHeading'
+export { default as Select } from './Select'
+export { default as TriangleAccent } from './TriangleAccent'
