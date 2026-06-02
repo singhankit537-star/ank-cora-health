@@ -1,7 +1,9 @@
+import { Suspense } from 'react'
 import Button from '../ui/Button'
 import Container from '../ui/Container'
 import TriangleAccent from '../ui/TriangleAccent'
 import ImageCarousel from '../ui/ImageCarousel'
+import { useIntersectionObserver } from '../../hooks/useIntersectionObserver'
 
 // Add / remove / reorder hero slides here — each item is { src, alt }.
 // Use Unsplash URLs with `auto=format&fit=crop&q=80` so responsive widths work.
@@ -29,8 +31,17 @@ export default function Hero({
   subtitle = 'With 250+ Physical Therapy and Rehabilitation Clinics, Find Care or a Career Close By.',
   images = HERO_IMAGES,
 }) {
+  // Lazy load carousel when hero section comes into view
+  const [ref, isVisible] = useIntersectionObserver({
+    threshold: 0.1,
+    rootMargin: '200px', // Start loading 200px before the section is visible
+    once: true,
+  })
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-cora-sky via-white to-white">
+    <section
+      ref={ref}
+      className="relative overflow-hidden bg-gradient-to-br from-cora-sky via-white to-white"
+    >
       <Container className="grid items-center gap-10 py-12 sm:gap-12 lg:grid-cols-2 lg:py-24">
         <div className="order-2 lg:order-1">
           <h1 className="text-4xl font-bold leading-[1.05] tracking-tight text-cora-navy sm:text-5xl lg:text-6xl xl:text-7xl">
@@ -55,7 +66,15 @@ export default function Hero({
               aria-hidden="true"
               className="absolute -right-4 -top-4 -z-10 hidden h-full w-full rounded-3xl bg-cora-sky lg:block"
             />
-            <ImageCarousel images={images} interval={4000} />
+            {/* Lazy load carousel when section is visible */}
+            {isVisible ? (
+              <ImageCarousel images={images} interval={4000} />
+            ) : (
+              <div className="relative mx-auto max-w-md lg:max-w-none rounded-3xl shadow-2xl ring-1 ring-cora-navy/5 overflow-hidden">
+                {/* Loading skeleton placeholder */}
+                <div className="aspect-[4/3] w-full animate-pulse bg-gradient-to-br from-cora-sky/50 to-cora-sky/30" />
+              </div>
+            )}
           </div>
         </div>
       </Container>

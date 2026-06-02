@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 /**
  * Auto-rotating image carousel with prev/next arrows and dot indicators.
+ * Includes optimized lazy loading with native `loading="lazy"` and preloading of adjacent slides.
  *
  * To add or remove slides, just edit the `images` array passed in
  * (see `HERO_IMAGES` in Hero.jsx). Each item is:
@@ -21,11 +22,20 @@ export default function ImageCarousel({
 }) {
   const [current, setCurrent] = useState(0)
   const [paused, setPaused] = useState(false)
+  const [loadedImages, setLoadedImages] = useState(new Set([0])) // Track which images have loaded
   const count = images.length
 
   const goTo = useCallback((index) => setCurrent((index + count) % count), [count])
   const next = useCallback(() => goTo(current + 1), [current, goTo])
   const prev = useCallback(() => goTo(current - 1), [current, goTo])
+
+  // Handle image load events
+  const handleImageLoad = useCallback(
+    (index) => {
+      setLoadedImages((prev) => new Set([...prev, index]))
+    },
+    []
+  )
 
   // auto-advance, paused on hover/focus
   useEffect(() => {
@@ -52,19 +62,33 @@ export default function ImageCarousel({
         className="flex transition-transform duration-700 ease-out"
         style={{ transform: `translateX(-${current * 100}%)` }}
       >
-        {images.map((img, i) => (
-          <div key={img.src} className="relative w-full shrink-0">
-            <img
-              src={img.src}
-              srcSet={`${img.src}&w=480 480w, ${img.src}&w=800 800w, ${img.src}&w=1200 1200w`}
-              sizes={sizes}
-              alt={img.alt}
-              loading={i === 0 ? 'eager' : 'lazy'}
-              className="aspect-[4/3] w-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-cora-navy/40 via-transparent to-transparent" />
-          </div>
-        ))}
+        {images.map((img, i) => {
+          const isLoaded = loadedImages.has(i)
+          // Preload current, next, and previous images
+          const shouldPreload = Math.abs(i - current) <= 1
+          const loadingStrategy = i === 0 ? 'eager' : shouldPreload ? 'eager' : 'lazy'
+
+          return (
+            <div key={img.src} className="relative w-full shrink-0">
+              {/* Skeleton loader shown while image is loading */}
+              {!isLoaded && (
+                <div className="absolute inset-0 aspect-[4/3] animate-pulse bg-cora-sky/30" />
+              )}
+              <img
+                src={img.src}
+                srcSet={`${img.src}&w=480 480w, ${img.src}&w=800 800w, ${img.src}&w=1200 1200w`}
+                sizes={sizes}
+                alt={img.alt}
+                loading={loadingStrategy}
+                onLoad={() => handleImageLoad(i)}
+                className={`aspect-[4/3] w-full object-cover transition-opacity ${
+                  isLoaded ? 'opacity-100' : 'opacity-0'
+                }`}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-cora-navy/40 via-transparent to-transparent" />
+            </div>
+          )
+        })}
       </div>
 
       {/* arrows (only when more than one slide) */}

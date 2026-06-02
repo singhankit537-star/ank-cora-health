@@ -1,10 +1,13 @@
-import { useMemo, useState } from 'react'
+import { Suspense, lazy, useMemo, useState } from 'react'
 import AnnouncementBar from '../components/layout/AnnouncementBar'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
-import ClinicMap from '../components/ui/ClinicMap'
 import Container from '../components/ui/Container'
 import { clinics, locationStates } from '../data/locations'
+
+// Leaflet is a heavy dependency (map engine + CSS), so the map is split into
+// its own chunk and only fetched when this page renders.
+const ClinicMap = lazy(() => import('../components/ui/ClinicMap'))
 
 export default function FindLocationPage() {
   const [activeState, setActiveState] = useState(null)
@@ -87,7 +90,17 @@ export default function FindLocationPage() {
 
         {/* ---- Map (markers reflect the active filter) ---- */}
         <section aria-label="Clinic map">
-          <ClinicMap clinics={visibleClinics} highlight={Boolean(activeState || query)} />
+          <Suspense
+            fallback={
+              <div
+                className="h-[320px] w-full animate-pulse bg-cora-sky/30 sm:h-[420px]"
+                role="status"
+                aria-label="Loading map"
+              />
+            }
+          >
+            <ClinicMap clinics={visibleClinics} highlight={Boolean(activeState || query)} />
+          </Suspense>
         </section>
 
         {/* ---- Filter + results ---- */}
