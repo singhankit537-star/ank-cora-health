@@ -1,3 +1,5 @@
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react'
+
 const variants = {
   primary:
     'bg-cora-orange text-white hover:bg-orange-600 focus-visible:ring-cora-orange',
@@ -8,13 +10,20 @@ const variants = {
   ghost: 'text-cora-navy hover:bg-cora-sky focus-visible:ring-cora-navy',
   white:
     'bg-white text-cora-navy hover:bg-cora-sky focus-visible:ring-white',
-}
+} as const
 
 const sizes = {
   sm: 'px-4 py-2 text-sm',
   md: 'px-6 py-2.5 text-sm font-semibold',
   lg: 'px-8 py-3 text-base font-semibold',
-}
+} as const
+
+type Variant = keyof typeof variants
+type Size = keyof typeof sizes
+
+type ButtonProps = { variant?: Variant; size?: Size; href?: string } &
+  ButtonHTMLAttributes<HTMLButtonElement> &
+  AnchorHTMLAttributes<HTMLAnchorElement>
 
 export default function Button({
   children,
@@ -23,7 +32,7 @@ export default function Button({
   className = '',
   href,
   ...props
-}) {
+}: ButtonProps) {
   const classes = `inline-flex items-center justify-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${variants[variant] ?? variants.primary} ${sizes[size] ?? sizes.md} ${className}`
 
   if (href) {

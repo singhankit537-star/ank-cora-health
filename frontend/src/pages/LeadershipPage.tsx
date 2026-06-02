@@ -3,6 +3,7 @@ import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
 import Container from '../components/ui/Container'
 import { leadership } from '../data/leadership'
+import type { Leader } from '../data/leadership'
 
 export default function LeadershipPage() {
   return (
@@ -31,7 +32,7 @@ export default function LeadershipPage() {
   )
 }
 
-function LeaderCard({ name, title, image }) {
+function LeaderCard({ name, title, image }: Leader) {
   return (
     <li className="group">
       <div className="overflow-hidden rounded-lg bg-cora-light shadow-sm ring-1 ring-gray-100 transition-shadow group-hover:shadow-lg">

@@ -1,10 +1,17 @@
+import type { InputHTMLAttributes } from 'react'
+
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+  label?: string
+  wrapperClassName?: string
+}
+
 export default function Input({
   label,
   id,
   className = '',
   wrapperClassName = '',
   ...props
-}) {
+}: InputProps) {
   const inputId = id ?? label?.toLowerCase().replace(/\s+/g, '-')
 
   return (

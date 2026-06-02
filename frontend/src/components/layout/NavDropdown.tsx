@@ -1,6 +1,13 @@
 import { useState } from 'react'
+import type { NavChild } from '../../data/navigation'
 
-export default function NavDropdown({ label, href, items = [] }) {
+interface NavDropdownProps {
+  label: string
+  href: string
+  items?: NavChild[]
+}
+
+export default function NavDropdown({ label, href, items = [] }: NavDropdownProps) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -42,7 +49,11 @@ export default function NavDropdown({ label, href, items = [] }) {
   )
 }
 
-function ChevronIcon({ open }) {
+interface ChevronIconProps {
+  open: boolean
+}
+
+function ChevronIcon({ open }: ChevronIconProps) {
   return (
     <svg
       className={`h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`}

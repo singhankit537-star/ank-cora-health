@@ -1,4 +1,12 @@
-export default function TriangleAccent({ className = '', flip = false }) {
+interface TriangleAccentProps {
+  className?: string
+  flip?: boolean
+}
+
+export default function TriangleAccent({
+  className = '',
+  flip = false,
+}: TriangleAccentProps) {
   return (
     <div
       className={`pointer-events-none overflow-hidden leading-none ${className}`}

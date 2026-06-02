@@ -1,10 +1,16 @@
 // Leadership team members shown on the Leadership page.
 // Add / remove / reorder entries here — the grid updates automatically.
 
-const portrait = (id) =>
+const portrait = (id: string): string =>
   `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=600&q=80`
 
-export const leadership = [
+export interface Leader {
+  name: string
+  title: string
+  image: string
+}
+
+export const leadership: Leader[] = [
   {
     name: 'Dr. Amara Okafor, DPT',
     title: 'Chief Executive Officer',

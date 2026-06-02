@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type { ChangeEvent, FormEvent } from 'react'
 import Button from '../ui/Button'
 import Container from '../ui/Container'
 import Input from '../ui/Input'
@@ -25,7 +26,7 @@ const resultOptions = [
 export default function LocationFinder() {
   const [zip, setZip] = useState('')
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     // Placeholder for location API integration
   }
@@ -47,7 +48,7 @@ export default function LocationFinder() {
               label="ZIP or City"
               placeholder="Enter ZIP or city"
               value={zip}
-              onChange={(e) => setZip(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setZip(e.target.value)}
               wrapperClassName="sm:col-span-2 lg:col-span-2"
             />
             <Select

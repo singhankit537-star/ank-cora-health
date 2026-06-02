@@ -1,4 +1,11 @@
-export const newsArticles = [
+export interface NewsArticle {
+  id: number
+  title: string
+  excerpt: string
+  image: string
+}
+
+export const newsArticles: NewsArticle[] = [
   {
     id: 1,
     title: 'AlterG Anti-Gravity Treadmill: Move with Less Pain and More Confidence',

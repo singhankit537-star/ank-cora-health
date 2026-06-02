@@ -1,13 +1,19 @@
-import { Suspense } from 'react'
 import Button from '../ui/Button'
 import Container from '../ui/Container'
 import TriangleAccent from '../ui/TriangleAccent'
 import ImageCarousel from '../ui/ImageCarousel'
+import type { CarouselImage } from '../ui/ImageCarousel'
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver'
+
+interface HeroProps {
+  title?: string
+  subtitle?: string
+  images?: CarouselImage[]
+}
 
 // Add / remove / reorder hero slides here — each item is { src, alt }.
 // Use Unsplash URLs with `auto=format&fit=crop&q=80` so responsive widths work.
-const HERO_IMAGES = [
+const HERO_IMAGES: CarouselImage[] = [
   {
     src: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&q=80',
     alt: 'Physical therapist guiding a patient through rehabilitation exercises',
@@ -30,9 +36,9 @@ export default function Hero({
   title = 'Physical Therapy for Everyone.',
   subtitle = 'With 250+ Physical Therapy and Rehabilitation Clinics, Find Care or a Career Close By.',
   images = HERO_IMAGES,
-}) {
+}: HeroProps) {
   // Lazy load carousel when hero section comes into view
-  const [ref, isVisible] = useIntersectionObserver({
+  const [ref, isVisible] = useIntersectionObserver<HTMLElement>({
     threshold: 0.1,
     rootMargin: '200px', // Start loading 200px before the section is visible
     once: true,

@@ -1,4 +1,5 @@
 import { painAreas } from '../../data/painAreas'
+import type { PainArea } from '../../data/painAreas'
 import Button from '../ui/Button'
 import Container from '../ui/Container'
 import SectionHeading from '../ui/SectionHeading'
@@ -25,7 +26,9 @@ export default function PainGrid() {
   )
 }
 
-function PainCard({ title, image, slug }) {
+type PainCardProps = Pick<PainArea, 'title' | 'image' | 'slug'>
+
+function PainCard({ title, image, slug }: PainCardProps) {
   return (
     <a
       href={`#condition/${slug}`}

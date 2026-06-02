@@ -1,4 +1,10 @@
-export const testimonials = [
+export interface Testimonial {
+  id: number
+  name: string
+  quote: string
+}
+
+export const testimonials: Testimonial[] = [
   {
     id: 1,
     name: 'James Barr',

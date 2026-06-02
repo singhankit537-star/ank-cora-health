@@ -4,8 +4,14 @@ import Header from '../components/layout/Header'
 import Button from '../components/ui/Button'
 import Container from '../components/ui/Container'
 import { getCondition } from '../data/conditions'
+import type { Condition } from '../data/conditions'
+import type { ReactNode } from 'react'
 
-export default function ConditionPage({ slug }) {
+interface ConditionPageProps {
+  slug: string
+}
+
+export default function ConditionPage({ slug }: ConditionPageProps) {
   const condition = getCondition(slug)
 
   return (
@@ -18,7 +24,7 @@ export default function ConditionPage({ slug }) {
   )
 }
 
-function ConditionContent({ condition }) {
+function ConditionContent({ condition }: { condition: Condition }) {
   const {
     name,
     heroImage,
@@ -130,7 +136,15 @@ function ConditionContent({ condition }) {
   )
 }
 
-function ListBlock({ heading, items, className = '' }) {
+function ListBlock({
+  heading,
+  items,
+  className = '',
+}: {
+  heading: string
+  items: string[]
+  className?: string
+}) {
   return (
     <div className={className}>
       <h2 className="text-lg font-bold text-white">{heading}</h2>
@@ -167,7 +181,14 @@ const ctaCards = [
   },
 ]
 
-function CtaCard({ title, subtitle, href, icon: Icon }) {
+interface CtaCardData {
+  title: string
+  subtitle: string
+  href: string
+  icon: () => ReactNode
+}
+
+function CtaCard({ title, subtitle, href, icon: Icon }: CtaCardData) {
   return (
     <a
       href={href}
@@ -195,7 +216,7 @@ function MovementIcons() {
   )
 }
 
-function NotFound({ slug }) {
+function NotFound({ slug }: { slug: string }) {
   return (
     <main id="main" className="py-24">
       <Container className="text-center">

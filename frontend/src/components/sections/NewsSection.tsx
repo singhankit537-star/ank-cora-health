@@ -1,4 +1,5 @@
 import { newsArticles } from '../../data/news'
+import type { NewsArticle } from '../../data/news'
 import Card from '../ui/Card'
 import Container from '../ui/Container'
 import SectionHeading from '../ui/SectionHeading'
@@ -24,7 +25,9 @@ export default function NewsSection() {
   )
 }
 
-function NewsCard({ title, excerpt, image }) {
+type NewsCardProps = Pick<NewsArticle, 'title' | 'excerpt' | 'image'>
+
+function NewsCard({ title, excerpt, image }: NewsCardProps) {
   return (
     <Card hover as="article" className="flex flex-col">
       <a href="#" className="block overflow-hidden">

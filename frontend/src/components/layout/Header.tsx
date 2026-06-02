@@ -77,7 +77,11 @@ export default function Header() {
   )
 }
 
-function MobileNav({ onClose }) {
+interface MobileNavProps {
+  onClose: () => void
+}
+
+function MobileNav({ onClose }: MobileNavProps) {
   return (
     <nav
       className="border-t border-gray-100 bg-white lg:hidden"

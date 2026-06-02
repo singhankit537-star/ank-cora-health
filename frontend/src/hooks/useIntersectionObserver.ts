@@ -1,21 +1,26 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type RefObject } from 'react'
+
+export interface UseIntersectionObserverOptions {
+  /** Visibility threshold (0-1, default 0.1) */
+  threshold?: number
+  /** Margin around root (default '0px') */
+  rootMargin?: string
+  /** Stop observing after first intersection (default true) */
+  once?: boolean
+}
 
 /**
  * Hook to detect when an element enters the viewport using Intersection Observer.
  * Useful for lazy loading content, analytics tracking, and performance optimization.
  *
- * @param {Object} options - Intersection Observer options
- * @param {number} options.threshold - Visibility threshold (0-1, default 0.1)
- * @param {string} options.rootMargin - Margin around root (default '0px')
- * @param {boolean} options.once - Stop observing after first intersection (default true)
- * @returns {[React.RefObject, boolean]} - ref to attach to element and isVisible state
+ * Returns a ref to attach to the element and the `isVisible` state.
  */
-export function useIntersectionObserver({
+export function useIntersectionObserver<T extends Element = HTMLDivElement>({
   threshold = 0.1,
   rootMargin = '0px',
   once = true,
-} = {}) {
-  const ref = useRef(null)
+}: UseIntersectionObserverOptions = {}): [RefObject<T | null>, boolean] {
+  const ref = useRef<T>(null)
   const [isVisible, setIsVisible] = useState(false)
   const [hasBeenVisible, setHasBeenVisible] = useState(false)
 
@@ -38,13 +43,14 @@ export function useIntersectionObserver({
       }
     )
 
-    if (ref.current) {
-      observer.observe(ref.current)
+    const element = ref.current
+    if (element) {
+      observer.observe(element)
     }
 
     return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current)
+      if (element) {
+        observer.unobserve(element)
       }
     }
   }, [threshold, rootMargin, once])

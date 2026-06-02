@@ -1,12 +1,13 @@
 import { useEffect, useRef } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import type { Clinic } from '../../data/locations'
 
-const US_CENTER = [39.5, -98.35]
+const US_CENTER: L.LatLngTuple = [39.5, -98.35]
 const US_ZOOM = 4
 
 // Brand-colored circular pin built from inline styles (no image assets needed).
-function pinIcon(color) {
+function pinIcon(color: string) {
   return L.divIcon({
     className: 'clinic-pin',
     html: `<span style="display:block;width:18px;height:18px;border-radius:9999px;background:${color};border:3px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.45)"></span>`,
@@ -16,19 +17,24 @@ function pinIcon(color) {
   })
 }
 
+interface ClinicMapProps {
+  clinics?: Clinic[]
+  highlight?: boolean
+}
+
 /**
  * Interactive Leaflet map that plots a marker for every clinic passed in and
  * fits the view to them. When `highlight` is true (a state filter is active)
  * the markers render in the brand orange so the filtered results stand out.
  */
-export default function ClinicMap({ clinics = [], highlight = false }) {
-  const containerRef = useRef(null)
-  const mapRef = useRef(null)
-  const layerRef = useRef(null)
+export default function ClinicMap({ clinics = [], highlight = false }: ClinicMapProps) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const mapRef = useRef<L.Map | null>(null)
+  const layerRef = useRef<L.LayerGroup | null>(null)
 
   // initialise the map once
   useEffect(() => {
-    if (mapRef.current) return
+    if (mapRef.current || !containerRef.current) return
     const map = L.map(containerRef.current, {
       scrollWheelZoom: false,
     }).setView(US_CENTER, US_ZOOM)
@@ -58,7 +64,7 @@ export default function ClinicMap({ clinics = [], highlight = false }) {
     const points = clinics.filter((c) => c.lat != null && c.lng != null)
     const icon = pinIcon(highlight ? '#f57c00' : '#0072bc')
 
-    const markers = points.map((c) => {
+    const markers: L.Marker[] = points.map((c) => {
       const marker = L.marker([c.lat, c.lng], { icon }).bindPopup(
         `<strong style="color:#0c3d6e">CORA ${c.city}</strong><br/>${c.address.join('<br/>')}<br/><a href="tel:${c.phone.replace(/[^\d]/g, '')}">${c.phone}</a>`,
       )

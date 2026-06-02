@@ -4,10 +4,24 @@
 // To add a new condition: add an object below and it automatically appears in
 // the "What We Treat" menu (order here = order in the menu).
 
-const img = (id) =>
+const img = (id: string): string =>
   `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&q=80&w=1400`
 
-export const conditions = {
+export interface Condition {
+  slug: string
+  menuLabel: string
+  name: string
+  heroImage: string
+  title: string
+  intro: string
+  subheading: string
+  body: string
+  symptoms: string[]
+  conditionsTreated: string[]
+  treatments: string[]
+}
+
+export const conditions: Record<string, Condition> = {
   'neck-pain': {
     slug: 'neck-pain',
     menuLabel: 'Neck',
@@ -678,12 +692,17 @@ export const conditions = {
   },
 }
 
+export interface TreatMenuItem {
+  label: string
+  slug: string
+}
+
 // Ordered list used to build the "What We Treat" menu (preserves insertion order).
-export const treatMenu = Object.values(conditions).map((c) => ({
+export const treatMenu: TreatMenuItem[] = Object.values(conditions).map((c) => ({
   label: c.menuLabel,
   slug: c.slug,
 }))
 
-export function getCondition(slug) {
+export function getCondition(slug: string): Condition | null {
   return conditions[slug] ?? null
 }

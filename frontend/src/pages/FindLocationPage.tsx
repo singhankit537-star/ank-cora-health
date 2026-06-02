@@ -4,13 +4,14 @@ import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
 import Container from '../components/ui/Container'
 import { clinics, locationStates } from '../data/locations'
+import type { Clinic } from '../data/locations'
 
 // Leaflet is a heavy dependency (map engine + CSS), so the map is split into
 // its own chunk and only fetched when this page renders.
 const ClinicMap = lazy(() => import('../components/ui/ClinicMap'))
 
 export default function FindLocationPage() {
-  const [activeState, setActiveState] = useState(null)
+  const [activeState, setActiveState] = useState<string | null>(null)
   const [query, setQuery] = useState('')
 
   const visibleClinics = useMemo(() => {
@@ -161,7 +162,7 @@ export default function FindLocationPage() {
   )
 }
 
-function ClinicCard({ clinic }) {
+function ClinicCard({ clinic }: { clinic: Clinic }) {
   const tel = `tel:${clinic.phone.replace(/[^\d]/g, '')}`
   return (
     <article className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-lg">

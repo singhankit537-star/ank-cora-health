@@ -2,12 +2,19 @@ import { topNav } from '../../data/navigation'
 import Container from '../ui/Container'
 import TopNavDropdown from './TopNavDropdown'
 
+interface AnnouncementBarProps {
+  message?: string
+  linkText?: string
+  linkHref?: string
+  onClose?: () => void
+}
+
 export default function AnnouncementBar({
   message = 'From new grads to seasoned pros, your next move starts here.',
   linkText = 'Explore CORA Careers',
   linkHref = '#careers',
   onClose,
-}) {
+}: AnnouncementBarProps) {
   return (
     <div className="bg-cora-navy text-white">
       <Container className="flex items-center justify-between gap-4 py-2.5 text-sm">

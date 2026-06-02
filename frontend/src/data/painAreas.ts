@@ -1,5 +1,12 @@
-// `slug` links each card to a condition page (#condition/<slug>) in conditions.js
-export const painAreas = [
+// `slug` links each card to a condition page (#condition/<slug>) in conditions.ts
+export interface PainArea {
+  id: string
+  title: string
+  slug: string
+  image: string
+}
+
+export const painAreas: PainArea[] = [
   { id: 'neck', title: 'Neck', slug: 'neck-pain', image: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop' },
   { id: 'shoulder', title: 'Shoulder', slug: 'shoulder-pain', image: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&h=300&fit=crop' },
   { id: 'elbow', title: 'Elbow', slug: 'elbow-pain', image: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=300&fit=crop' },

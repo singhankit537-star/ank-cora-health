@@ -1,6 +1,7 @@
 import { useState } from 'react'
+import type React from 'react'
+import type { InputHTMLAttributes, ReactNode } from 'react'
 import AnnouncementBar from '../components/layout/AnnouncementBar'
-import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
 import Container from '../components/ui/Container'
 
@@ -16,7 +17,7 @@ const services = [
 export default function AppointmentPage() {
   const [seenDoctor, setSeenDoctor] = useState(true)
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     // Placeholder for clinic-search API integration
   }
@@ -164,7 +165,12 @@ export default function AppointmentPage() {
 
 /* ---------- small building blocks ---------- */
 
-function IconInput({ icon, trailing, className = '', ...props }) {
+interface IconInputProps extends InputHTMLAttributes<HTMLInputElement> {
+  icon: ReactNode
+  trailing?: ReactNode
+}
+
+function IconInput({ icon, trailing, className = '', ...props }: IconInputProps) {
   return (
     <div className="relative">
       <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -183,7 +189,7 @@ function IconInput({ icon, trailing, className = '', ...props }) {
   )
 }
 
-function SecondaryButton({ children }) {
+function SecondaryButton({ children }: { children?: ReactNode }) {
   return (
     <button
       type="button"

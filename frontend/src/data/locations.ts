@@ -1,7 +1,16 @@
 // Mock clinic data for the Find a Location page.
 // Add / remove clinics here — the state filter list is derived automatically.
 
-export const clinics = [
+export interface Clinic {
+  city: string
+  state: string
+  address: string[]
+  phone: string
+  lat: number
+  lng: number
+}
+
+export const clinics: Clinic[] = [
   {
     city: 'Kennerly',
     state: 'Florida',
@@ -133,4 +142,4 @@ export const clinics = [
 ]
 
 // Unique, alphabetically sorted list of states for the filter sidebar.
-export const locationStates = [...new Set(clinics.map((c) => c.state))].sort()
+export const locationStates: string[] = [...new Set(clinics.map((c) => c.state))].sort()

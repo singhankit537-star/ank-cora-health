@@ -1,11 +1,23 @@
 import { useCallback, useEffect, useState } from 'react'
 
+export interface CarouselImage {
+  src: string
+  alt: string
+}
+
+interface ImageCarouselProps {
+  images?: CarouselImage[]
+  interval?: number
+  autoPlay?: boolean
+  sizes?: string
+}
+
 /**
  * Auto-rotating image carousel with prev/next arrows and dot indicators.
  * Includes optimized lazy loading with native `loading="lazy"` and preloading of adjacent slides.
  *
  * To add or remove slides, just edit the `images` array passed in
- * (see `HERO_IMAGES` in Hero.jsx). Each item is:
+ * (see `HERO_IMAGES` in Hero.tsx). Each item is:
  *   { src: string, alt: string }
  *
  * Props:
@@ -19,19 +31,19 @@ export default function ImageCarousel({
   interval = 4000,
   autoPlay = true,
   sizes = '(min-width: 1024px) 50vw, 100vw',
-}) {
+}: ImageCarouselProps) {
   const [current, setCurrent] = useState(0)
   const [paused, setPaused] = useState(false)
-  const [loadedImages, setLoadedImages] = useState(new Set([0])) // Track which images have loaded
+  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set([0])) // Track which images have loaded
   const count = images.length
 
-  const goTo = useCallback((index) => setCurrent((index + count) % count), [count])
+  const goTo = useCallback((index: number) => setCurrent((index + count) % count), [count])
   const next = useCallback(() => goTo(current + 1), [current, goTo])
   const prev = useCallback(() => goTo(current - 1), [current, goTo])
 
   // Handle image load events
   const handleImageLoad = useCallback(
-    (index) => {
+    (index: number) => {
       setLoadedImages((prev) => new Set([...prev, index]))
     },
     []

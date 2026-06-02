@@ -1,4 +1,12 @@
 import { useState } from 'react'
+import type { NavChild } from '../../data/navigation'
+
+interface TopNavDropdownProps {
+  label: string
+  href: string
+  items?: NavChild[]
+  highlight?: boolean
+}
 
 /**
  * A single top-bar (navy) nav item. Renders a plain link when it has no
@@ -6,7 +14,12 @@ import { useState } from 'react'
  *
  * Styled for the dark navy AnnouncementBar.
  */
-export default function TopNavDropdown({ label, href, items = [], highlight = false }) {
+export default function TopNavDropdown({
+  label,
+  href,
+  items = [],
+  highlight = false,
+}: TopNavDropdownProps) {
   const [open, setOpen] = useState(false)
   const hasMenu = items.length > 0
 
@@ -79,7 +92,11 @@ export default function TopNavDropdown({ label, href, items = [], highlight = fa
   )
 }
 
-function ChevronIcon({ open }) {
+interface ChevronIconProps {
+  open: boolean
+}
+
+function ChevronIcon({ open }: ChevronIconProps) {
   return (
     <svg
       className={`h-3.5 w-3.5 transition-transform ${open ? 'rotate-180' : ''}`}

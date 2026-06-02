@@ -1,3 +1,14 @@
+import type { ReactNode } from 'react'
+
+interface SectionHeadingProps {
+  eyebrow?: ReactNode
+  title?: ReactNode
+  subtitle?: ReactNode
+  align?: 'center' | 'left'
+  light?: boolean
+  className?: string
+}
+
 export default function SectionHeading({
   eyebrow,
   title,
@@ -5,7 +16,7 @@ export default function SectionHeading({
   align = 'center',
   light = false,
   className = '',
-}) {
+}: SectionHeadingProps) {
   const alignClass =
     align === 'center' ? 'text-center mx-auto' : 'text-left'
 

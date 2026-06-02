@@ -1,6 +1,22 @@
 import { treatMenu } from './conditions'
 
-export const primaryNav = [
+export interface NavLink {
+  label: string
+  href: string
+  highlight?: boolean
+}
+
+// A dropdown child is either a plain label (href defaults to '#') or a full link.
+export type NavChild = string | NavLink
+
+export interface NavItem {
+  label: string
+  href: string
+  highlight?: boolean
+  children?: NavChild[]
+}
+
+export const primaryNav: NavItem[] = [
   {
     label: 'What We Treat',
     href: '#treat',
@@ -35,7 +51,7 @@ export const primaryNav = [
 ]
 
 // Shown in the navy top bar (top-right corner).
-export const topNav = [
+export const topNav: NavItem[] = [
   {
     label: 'About',
     href: '#about',
@@ -69,7 +85,7 @@ export const topNav = [
   { label: 'Apply Now', href: '#apply', highlight: true },
 ]
 
-export const footerQuickLinks = [
+export const footerQuickLinks: NavLink[] = [
   { label: 'Contact Us', href: '#' },
   { label: 'Physicians', href: '#' },
   { label: 'Telehealth', href: '#' },
@@ -80,14 +96,14 @@ export const footerQuickLinks = [
   { label: 'Student Resources', href: '#' },
 ]
 
-export const footerLegal = [
+export const footerLegal: NavLink[] = [
   { label: 'Privacy Policy', href: '#' },
   { label: 'Terms of Service', href: '#' },
   { label: 'HIPAA Notice', href: '#' },
   { label: 'Opt-Out Policy', href: '#' },
 ]
 
-export const socialLinks = [
+export const socialLinks: NavLink[] = [
   { label: 'Instagram', href: '#' },
   { label: 'Facebook', href: '#' },
   { label: 'X', href: '#' },

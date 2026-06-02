@@ -8,7 +8,7 @@ const ConditionPage = lazy(() => import('./pages/ConditionPage'))
 const FindLocationPage = lazy(() => import('./pages/FindLocationPage'))
 const LeadershipPage = lazy(() => import('./pages/LeadershipPage'))
 
-function getRoute() {
+function getRoute(): string {
   return window.location.hash.replace(/^#\/?/, '')
 }
 
@@ -26,7 +26,7 @@ function PageFallback() {
   )
 }
 
-function renderRoute(route) {
+function renderRoute(route: string) {
   if (route === 'appointment') return <AppointmentPage />
   if (route === 'locations') return <FindLocationPage />
   if (route === 'leadership') return <LeadershipPage />
