@@ -12,6 +12,10 @@
     "dev:backend": "npm run dev --workspace backend",
     "dev:frontend": "npm run dev --workspace frontend",
     "build": "npm run build --workspace frontend",
+    "storybook": "npm run storybook --workspace frontend",
+    "build-storybook": "npm run build-storybook --workspace frontend",
+    "test": "npm run test --workspace frontend",
+    "test:watch": "npm run test:watch --workspace frontend",
     "start": "npm run start --workspace backend"
   },
   "repository": {

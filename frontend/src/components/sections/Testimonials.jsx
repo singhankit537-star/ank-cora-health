@@ -1,11 +1,13 @@
-import { useState } from 'react'
 import { testimonials } from '../../data/testimonials'
+import { setActiveIndex } from '../../store/slices/testimonialsSlice'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import Container from '../ui/Container'
 import SectionHeading from '../ui/SectionHeading'
 
 export default function Testimonials() {
-  const [active, setActive] = useState(0)
-  const current = testimonials[active]
+  const dispatch = useAppDispatch()
+  const activeIndex = useAppSelector((state) => state.testimonials.activeIndex)
+  const current = testimonials[activeIndex]
 
   return (
     <section className="bg-cora-light py-16 lg:py-24">
@@ -39,12 +41,14 @@ export default function Testimonials() {
               <button
                 key={t.id}
                 type="button"
-                onClick={() => setActive(i)}
+                onClick={() => dispatch(setActiveIndex(i))}
                 className={`h-2.5 rounded-full transition-all ${
-                  i === active ? 'w-8 bg-cora-blue' : 'w-2.5 bg-gray-300 hover:bg-cora-teal'
+                  i === activeIndex
+                    ? 'w-8 bg-cora-blue'
+                    : 'w-2.5 bg-gray-300 hover:bg-cora-teal'
                 }`}
                 aria-label={`View testimonial from ${t.name}`}
-                aria-current={i === active}
+                aria-current={i === activeIndex}
               />
             ))}
           </div>

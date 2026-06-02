@@ -21,7 +21,7 @@ export default function HomePage() {
       >
         Skip to main content
       </a>
-      <AnnouncementBar />
+      <AnnouncementBarConnected />
       <Header />
       <main id="main">
         <Suspense
