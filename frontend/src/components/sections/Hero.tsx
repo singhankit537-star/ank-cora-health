@@ -3,6 +3,7 @@ import Container from '../ui/Container'
 import TriangleAccent from '../ui/TriangleAccent'
 import ImageCarousel from '../ui/ImageCarousel'
 import type { CarouselImage } from '../ui/ImageCarousel'
+import {useNavigate} from 'react-router'
 
 interface HeroProps {
   title?: string
@@ -33,11 +34,14 @@ const HERO_IMAGES: CarouselImage[] = [
   },
 ]
 
-export default function Hero({
+
+export default function Hero(
+  {
   title = 'Physical Therapy for Everyone.',
   subtitle = 'With 250+ Physical Therapy and Rehabilitation Clinics, Find Care or a Career Close By.',
   images = HERO_IMAGES,
 }: HeroProps) {
+  const navigate = useNavigate()
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-cora-sky via-white to-white">
       <Container className="grid items-center gap-10 py-12 sm:gap-12 lg:grid-cols-2 lg:py-24">
@@ -49,10 +53,10 @@ export default function Hero({
             {subtitle}
           </p>
           <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
-            <Button variant="primary" size="lg" href="#appointment">
+            <Button variant="primary" size="lg" onClick={() => navigate('/appointment')}>
               Schedule An Appointment
             </Button>
-            <Button variant="outline" size="lg" href="#locations">
+            <Button variant="outline" size="lg" onClick={() => navigate('/locations')}>
               See Locations
             </Button>
           </div>

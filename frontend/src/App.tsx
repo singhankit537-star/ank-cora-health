@@ -1,4 +1,12 @@
-import { Suspense, lazy, useEffect, useState, useTransition } from 'react'
+import { Suspense, lazy } from 'react'
+import type { ReactNode } from 'react'
+import {
+  createBrowserRouter,
+  Outlet,
+  RouterProvider,
+  ScrollRestoration,
+} from 'react-router'
+import { useLinkInterceptor } from './hooks/useLinkInterceptor'
 
 // HomePage and ConditionPage are direct-landing destinations (root URL + search
 // traffic). They ship in the main bundle so there is zero extra network
@@ -7,14 +15,10 @@ import HomePage from './pages/HomePage'
 import ConditionPage from './pages/ConditionPage'
 
 // These pages are only ever reached by navigating *within* the SPA, so the
-// lazy chunk fetch is hidden behind startTransition — no visible delay.
+// lazy chunk fetch is hidden behind React Router's pending UI — no visible delay.
 const AppointmentPage = lazy(() => import('./pages/AppointmentPage'))
 const FindLocationPage = lazy(() => import('./pages/FindLocationPage'))
 const LeadershipPage = lazy(() => import('./pages/LeadershipPage'))
-
-function getRoute(): string {
-  return window.location.pathname.replace(/^\//, '')
-}
 
 // Full-screen fallback shown while a page chunk is being fetched.
 function PageFallback() {
@@ -30,53 +34,39 @@ function PageFallback() {
   )
 }
 
-function renderRoute(route: string) {
-  if (route === 'appointment') return <AppointmentPage />
-  if (route === 'locations') return <FindLocationPage />
-  if (route === 'leadership') return <LeadershipPage />
-  if (route.startsWith('condition/')) {
-    return <ConditionPage slug={route.slice('condition/'.length)} />
-  }
-  return <HomePage />
+// Wrap a lazily-loaded page in its own Suspense boundary so only the page chunk
+// gates on the fallback, not the rest of the shell.
+function lazyRoute(element: ReactNode) {
+  return <Suspense fallback={<PageFallback />}>{element}</Suspense>
 }
 
+// Root layout: keeps the app's single global click-interceptor so every plain
+// <a href> internal link navigates through the SPA router instead of triggering
+// a full page load, and restores scroll position across navigations.
+function RootLayout() {
+  useLinkInterceptor()
+
+  return (
+    <>
+      <ScrollRestoration />
+      <Outlet />
+    </>
+  )
+}
+
+const router = createBrowserRouter([
+  {
+    element: <RootLayout />,
+    children: [
+      { index: true, element: <HomePage /> },
+      { path: 'condition/:slug', element: <ConditionPage /> },
+      { path: 'appointment', element: lazyRoute(<AppointmentPage />) },
+      { path: 'locations', element: lazyRoute(<FindLocationPage />) },
+      { path: 'leadership', element: lazyRoute(<LeadershipPage />) },
+    ],
+  },
+])
+
 export default function App() {
-  const [route, setRoute] = useState(getRoute())
-  const [, startTransition] = useTransition()
-
-  useEffect(() => {
-    // Handle browser back/forward navigation
-    const onPopState = () => {
-      startTransition(() => setRoute(getRoute()))
-      window.scrollTo(0, 0)
-    }
-    window.addEventListener('popstate', onPopState)
-
-    // Intercept clicks on internal links so they use pushState instead of a full page load
-    const handleClick = (e: MouseEvent) => {
-      const anchor = (e.target as Element).closest('a')
-      if (!anchor) return
-      const href = anchor.getAttribute('href')
-      if (
-        !href ||
-        href.startsWith('#') ||
-        href.startsWith('http') ||
-        href.startsWith('//') ||
-        href.startsWith('tel:') ||
-        href.startsWith('mailto:')
-      ) return
-      e.preventDefault()
-      window.history.pushState(null, '', href)
-      startTransition(() => setRoute(getRoute()))
-      window.scrollTo(0, 0)
-    }
-    document.addEventListener('click', handleClick)
-
-    return () => {
-      window.removeEventListener('popstate', onPopState)
-      document.removeEventListener('click', handleClick)
-    }
-  }, [])
-
-  return <Suspense fallback={<PageFallback />}>{renderRoute(route)}</Suspense>
+  return <RouterProvider router={router} />
 }
