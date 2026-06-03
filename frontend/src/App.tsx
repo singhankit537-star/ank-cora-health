@@ -1,82 +1,124 @@
-import { Suspense, lazy, useEffect, useState, useTransition } from 'react'
+import {
+  createBrowserRouter,
+  RouterProvider,
+  ScrollRestoration,
+  Outlet,
+} from 'react-router-dom'
 
-// HomePage and ConditionPage are direct-landing destinations (root URL + search
-// traffic). They ship in the main bundle so there is zero extra network
-// round-trip before the LCP element can be painted.
+import { AuthProvider } from './context/AuthContext'
+import ProtectedRoute from './components/ProtectedRoute'
+import PublicRoute from './components/PublicRoute'
+
+// ---------------------------------------------------------------------------
+// Route-level code splitting
+//
+// HomePage and ConditionPage are direct-landing destinations (root URL + SEO
+// traffic). They ship in the main bundle so there is zero extra round-trip
+// before the LCP element can be painted.
+// ---------------------------------------------------------------------------
 import HomePage from './pages/HomePage'
 import ConditionPage from './pages/ConditionPage'
 
-// These pages are only ever reached by navigating *within* the SPA, so the
-// lazy chunk fetch is hidden behind startTransition — no visible delay.
-const AppointmentPage = lazy(() => import('./pages/AppointmentPage'))
-const FindLocationPage = lazy(() => import('./pages/FindLocationPage'))
-const LeadershipPage = lazy(() => import('./pages/LeadershipPage'))
-
-function getRoute(): string {
-  return window.location.pathname.replace(/^\//, '')
-}
-
-// Full-screen fallback shown while a page chunk is being fetched.
-function PageFallback() {
+// ---------------------------------------------------------------------------
+// Root layout — adds scroll-restoration and renders the matched child route
+// ---------------------------------------------------------------------------
+function RootLayout() {
   return (
-    <div
-      className="grid min-h-screen place-items-center bg-white"
-      role="status"
-      aria-live="polite"
-    >
-      <div className="h-10 w-10 animate-spin rounded-full border-4 border-cora-sky border-t-cora-blue" />
-      <span className="sr-only">Loading…</span>
-    </div>
+    <>
+      <ScrollRestoration />
+      <Outlet />
+    </>
   )
 }
 
-function renderRoute(route: string) {
-  if (route === 'appointment') return <AppointmentPage />
-  if (route === 'locations') return <FindLocationPage />
-  if (route === 'leadership') return <LeadershipPage />
-  if (route.startsWith('condition/')) {
-    return <ConditionPage slug={route.slice('condition/'.length)} />
-  }
-  return <HomePage />
-}
+// ---------------------------------------------------------------------------
+// Router definition
+//
+// Route hierarchy:
+//
+//   RootLayout
+//   ├── PublicRoute            ← redirects to /dashboard when authenticated
+//   │   └── /login
+//   ├── ProtectedRoute         ← redirects to /login when unauthenticated
+//   │   └── /dashboard
+//   └── Open routes            ← accessible to everyone (marketing pages)
+//       ├── /
+//       ├── /appointment
+//       ├── /locations
+//       ├── /leadership
+//       └── /condition/:slug
+// ---------------------------------------------------------------------------
+const router = createBrowserRouter([
+  {
+    element: <RootLayout />,
+    children: [
+      // ── Auth-only routes (redirect to /dashboard if already logged in) ──
+      {
+        element: <PublicRoute />,
+        children: [
+          {
+            path: '/login',
+            lazy: async () => {
+              const { default: Component } = await import('./pages/LoginPage')
+              return { Component }
+            },
+          },
+        ],
+      },
 
+      // ── Protected routes (redirect to /login if not logged in) ──
+      {
+        element: <ProtectedRoute />,
+        children: [
+          {
+            path: '/dashboard',
+            lazy: async () => {
+              const { default: Component } = await import('./pages/DashboardPage')
+              return { Component }
+            },
+          },
+        ],
+      },
+
+      // ── Open / marketing routes (no auth requirement) ──
+      { path: '/', element: <HomePage /> },
+      {
+        path: '/appointment',
+        lazy: async () => {
+          const { default: Component } = await import('./pages/AppointmentPage')
+          return { Component }
+        },
+      },
+      {
+        path: '/locations',
+        lazy: async () => {
+          const { default: Component } = await import('./pages/FindLocationPage')
+          return { Component }
+        },
+      },
+      {
+        path: '/leadership',
+        lazy: async () => {
+          const { default: Component } = await import('./pages/LeadershipPage')
+          return { Component }
+        },
+      },
+      { path: '/condition/:slug', element: <ConditionPage /> },
+
+      // ── Catch-all ──
+      { path: '*', element: <HomePage /> },
+    ],
+  },
+])
+
+// ---------------------------------------------------------------------------
+// App root — wraps the entire tree with AuthProvider so every route can
+// access auth state, then hands control to the router.
+// ---------------------------------------------------------------------------
 export default function App() {
-  const [route, setRoute] = useState(getRoute())
-  const [, startTransition] = useTransition()
-
-  useEffect(() => {
-    // Handle browser back/forward navigation
-    const onPopState = () => {
-      startTransition(() => setRoute(getRoute()))
-      window.scrollTo(0, 0)
-    }
-    window.addEventListener('popstate', onPopState)
-
-    // Intercept clicks on internal links so they use pushState instead of a full page load
-    const handleClick = (e: MouseEvent) => {
-      const anchor = (e.target as Element).closest('a')
-      if (!anchor) return
-      const href = anchor.getAttribute('href')
-      if (
-        !href ||
-        href.startsWith('#') ||
-        href.startsWith('http') ||
-        href.startsWith('//') ||
-        href.startsWith('tel:') ||
-        href.startsWith('mailto:')
-      ) return
-      e.preventDefault()
-      window.history.pushState(null, '', href)
-      startTransition(() => setRoute(getRoute()))
-      window.scrollTo(0, 0)
-    }
-    document.addEventListener('click', handleClick)
-
-    return () => {
-      window.removeEventListener('popstate', onPopState)
-      document.removeEventListener('click', handleClick)
-    }
-  }, [])
-
-  return <Suspense fallback={<PageFallback />}>{renderRoute(route)}</Suspense>
+  return (
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
+  )
 }

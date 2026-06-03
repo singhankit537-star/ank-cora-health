@@ -82,7 +82,7 @@ export const topNav: NavItem[] = [
   },
   { label: 'Locations', href: '/locations' },
   { label: 'Pay Bill', href: '#pay-bill' },
-  { label: 'Apply Now', href: '#apply', highlight: true },
+  { label: 'Apply Now', href: '/login', highlight: true },
 ]
 
 export const footerQuickLinks: NavLink[] = [

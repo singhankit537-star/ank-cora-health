@@ -1,3 +1,4 @@
+import { useParams } from 'react-router-dom'
 import AnnouncementBar from '../components/layout/AnnouncementBar'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
@@ -7,11 +8,8 @@ import { getCondition } from '../data/conditions'
 import type { Condition } from '../data/conditions'
 import type { ReactNode } from 'react'
 
-interface ConditionPageProps {
-  slug: string
-}
-
-export default function ConditionPage({ slug }: ConditionPageProps) {
+export default function ConditionPage() {
+  const { slug = '' } = useParams<{ slug: string }>()
   const condition = getCondition(slug)
 
   return (
