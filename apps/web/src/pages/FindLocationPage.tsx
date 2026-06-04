@@ -1,14 +1,36 @@
 import { Suspense, lazy, useMemo, useState } from 'react'
-import AnnouncementBar from '../components/layout/AnnouncementBar'
-import Footer from '../components/layout/Footer'
-import Header from '../components/layout/Header'
-import Container from '../components/ui/Container'
-import { clinics, locationStates } from '../data/locations'
-import type { Clinic } from '../data/locations'
+import AnnouncementBar from '@/components/layout/AnnouncementBar'
+import Footer from '@/components/layout/Footer'
+import Header from '@/components/layout/Header'
+import { ClinicCard, Container } from '@cora/ui'
+import { clinics, locationStates } from '@/data/locations'
 
-// Leaflet is a heavy dependency (map engine + CSS), so the map is split into
-// its own chunk and only fetched when this page renders.
-const ClinicMap = lazy(() => import('../components/ui/ClinicMap'))
+const ClinicMap = lazy(() => import('@/components/ui/ClinicMap'))
+
+function SearchIcon() {
+  return (
+    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
+    </svg>
+  )
+}
+
+function LocateIcon() {
+  return (
+    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden>
+      <circle cx="12" cy="12" r="3" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+    </svg>
+  )
+}
+
+function ArrowIcon() {
+  return (
+    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+  )
+}
 
 export default function FindLocationPage() {
   const [activeState, setActiveState] = useState<string | null>(null)
@@ -32,7 +54,6 @@ export default function FindLocationPage() {
       <Header />
 
       <main id="main">
-        {/* ---- Hero / search ---- */}
         <section className="relative overflow-hidden bg-white py-12 lg:py-16">
           <div
             aria-hidden="true"
@@ -76,10 +97,7 @@ export default function FindLocationPage() {
 
               <button
                 type="button"
-                onClick={() => {
-                  setActiveState(null)
-                  setQuery('')
-                }}
+                onClick={() => { setActiveState(null); setQuery('') }}
                 className="inline-flex items-center gap-1 text-sm font-medium text-cora-blue hover:text-cora-navy"
               >
                 View All Locations
@@ -89,7 +107,6 @@ export default function FindLocationPage() {
           </Container>
         </section>
 
-        {/* ---- Map (markers reflect the active filter) ---- */}
         <section aria-label="Clinic map">
           <Suspense
             fallback={
@@ -104,10 +121,8 @@ export default function FindLocationPage() {
           </Suspense>
         </section>
 
-        {/* ---- Filter + results ---- */}
         <section className="py-12 lg:py-16">
           <Container className="grid gap-10 lg:grid-cols-[220px_1fr]">
-            {/* sidebar */}
             <aside>
               <h2 className="text-2xl font-bold text-cora-navy">Filter Locations</h2>
               <ul className="mt-5 space-y-2">
@@ -119,9 +134,7 @@ export default function FindLocationPage() {
                         type="button"
                         onClick={() => setActiveState(isActive ? null : state)}
                         className={`flex w-full items-center gap-2 text-left text-sm transition-colors ${
-                          isActive
-                            ? 'font-semibold text-cora-orange'
-                            : 'text-cora-blue hover:text-cora-navy'
+                          isActive ? 'font-semibold text-cora-orange' : 'text-cora-blue hover:text-cora-navy'
                         }`}
                       >
                         <span className="text-cora-orange">›</span>
@@ -133,7 +146,6 @@ export default function FindLocationPage() {
               </ul>
             </aside>
 
-            {/* cards */}
             <div>
               <p className="mb-4 text-sm text-cora-gray">
                 Showing <span className="font-semibold text-cora-navy">{visibleClinics.length}</span>{' '}
@@ -159,80 +171,5 @@ export default function FindLocationPage() {
 
       <Footer />
     </div>
-  )
-}
-
-function ClinicCard({ clinic }: { clinic: Clinic }) {
-  const tel = `tel:${clinic.phone.replace(/[^\d]/g, '')}`
-  return (
-    <article className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-lg">
-      <div className="h-2 bg-cora-navy" />
-      <div className="p-5">
-        <div className="flex items-start justify-between gap-2">
-          <h3 className="text-lg font-bold text-cora-navy">CORA {clinic.city}</h3>
-          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-cora-sky text-xs font-bold text-cora-blue">
-            C
-          </span>
-        </div>
-
-        <address className="mt-3 not-italic">
-          {clinic.address.map((line) => (
-            <a
-              key={line}
-              href="#"
-              className="block text-sm text-cora-blue underline underline-offset-2 hover:text-cora-navy"
-            >
-              {line}
-            </a>
-          ))}
-        </address>
-
-        <a
-          href={tel}
-          className="mt-4 inline-flex items-center gap-2 rounded-full bg-cora-navy px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-cora-blue"
-        >
-          {clinic.phone}
-          <ArrowIcon />
-        </a>
-      </div>
-    </article>
-  )
-}
-
-/* ---------- icons ---------- */
-
-function iconProps(size = 'h-5 w-5') {
-  return {
-    className: size,
-    fill: 'none',
-    viewBox: '0 0 24 24',
-    stroke: 'currentColor',
-    strokeWidth: 2,
-    'aria-hidden': true,
-  }
-}
-
-function SearchIcon() {
-  return (
-    <svg {...iconProps()}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
-    </svg>
-  )
-}
-
-function LocateIcon() {
-  return (
-    <svg {...iconProps('h-4 w-4')}>
-      <circle cx="12" cy="12" r="3" />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 2v3M12 19v3M2 12h3M19 12h3" />
-    </svg>
-  )
-}
-
-function ArrowIcon() {
-  return (
-    <svg {...iconProps('h-4 w-4')}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-    </svg>
   )
 }

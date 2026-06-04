@@ -1,124 +1,70 @@
-import {
-  createBrowserRouter,
-  RouterProvider,
-  ScrollRestoration,
-  Outlet,
-} from 'react-router-dom'
+import React, { Suspense } from 'react'
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
+import { PublicLayout } from './components/layout/Layout'
+import { ProtectedRoute } from './components/auth/ProtectedRoute'
 
-import { AuthProvider } from './context/AuthContext'
-import ProtectedRoute from './components/ProtectedRoute'
-import PublicRoute from './components/PublicRoute'
+// All pages are lazy-loaded — each route gets its own JS chunk
+const HomePage        = React.lazy(() => import('./pages/HomePage'))
+const ConditionPage   = React.lazy(() => import('./pages/ConditionPage'))
+const WhatWeTreat     = React.lazy(() => import('./pages/WhatWeTreat'))
+const HowWeCanHelp    = React.lazy(() => import('./pages/HowWeCanHelp'))
+const LoginPage       = React.lazy(() => import('./pages/LoginPage'))
+const ClientDashboard = React.lazy(() => import('./pages/client/Dashboard'))
+const AdminDashboard  = React.lazy(() => import('./pages/admin/Dashboard'))
 
-// ---------------------------------------------------------------------------
-// Route-level code splitting
-//
-// HomePage and ConditionPage are direct-landing destinations (root URL + SEO
-// traffic). They ship in the main bundle so there is zero extra round-trip
-// before the LCP element can be painted.
-// ---------------------------------------------------------------------------
-import HomePage from './pages/HomePage'
-import ConditionPage from './pages/ConditionPage'
-
-// ---------------------------------------------------------------------------
-// Root layout — adds scroll-restoration and renders the matched child route
-// ---------------------------------------------------------------------------
-function RootLayout() {
+function PageLoader() {
   return (
-    <>
-      <ScrollRestoration />
-      <Outlet />
-    </>
+    <div className="grid min-h-screen place-items-center">
+      <span
+        className="h-8 w-8 animate-spin rounded-full border-4 border-cora-sky border-t-transparent"
+        aria-label="Loading"
+      />
+    </div>
   )
 }
 
-// ---------------------------------------------------------------------------
-// Router definition
-//
-// Route hierarchy:
-//
-//   RootLayout
-//   ├── PublicRoute            ← redirects to /dashboard when authenticated
-//   │   └── /login
-//   ├── ProtectedRoute         ← redirects to /login when unauthenticated
-//   │   └── /dashboard
-//   └── Open routes            ← accessible to everyone (marketing pages)
-//       ├── /
-//       ├── /appointment
-//       ├── /locations
-//       ├── /leadership
-//       └── /condition/:slug
-// ---------------------------------------------------------------------------
 const router = createBrowserRouter([
+  // ── Public routes (Header + Footer) ────────────────────────────────────────
   {
-    element: <RootLayout />,
+    element: <PublicLayout />,
     children: [
-      // ── Auth-only routes (redirect to /dashboard if already logged in) ──
-      {
-        element: <PublicRoute />,
-        children: [
-          {
-            path: '/login',
-            lazy: async () => {
-              const { default: Component } = await import('./pages/LoginPage')
-              return { Component }
-            },
-          },
-        ],
-      },
-
-      // ── Protected routes (redirect to /login if not logged in) ──
-      {
-        element: <ProtectedRoute />,
-        children: [
-          {
-            path: '/dashboard',
-            lazy: async () => {
-              const { default: Component } = await import('./pages/DashboardPage')
-              return { Component }
-            },
-          },
-        ],
-      },
-
-      // ── Open / marketing routes (no auth requirement) ──
       { path: '/', element: <HomePage /> },
-      {
-        path: '/appointment',
-        lazy: async () => {
-          const { default: Component } = await import('./pages/AppointmentPage')
-          return { Component }
-        },
-      },
-      {
-        path: '/locations',
-        lazy: async () => {
-          const { default: Component } = await import('./pages/FindLocationPage')
-          return { Component }
-        },
-      },
-      {
-        path: '/leadership',
-        lazy: async () => {
-          const { default: Component } = await import('./pages/LeadershipPage')
-          return { Component }
-        },
-      },
       { path: '/condition/:slug', element: <ConditionPage /> },
-
-      // ── Catch-all ──
-      { path: '*', element: <HomePage /> },
+      { path: '/what-we-treat', element: <WhatWeTreat /> },
+      { path: '/how-we-can-help', element: <HowWeCanHelp /> },
     ],
   },
+
+  // ── Login (standalone, no layout) ──────────────────────────────────────────
+  {
+    path: '/login',
+    element: <LoginPage />,
+  },
+
+  // ── Protected: client role ──────────────────────────────────────────────────
+  {
+    element: <ProtectedRoute requiredRole="client" />,
+    children: [
+      { path: '/client/dashboard', element: <ClientDashboard /> },
+    ],
+  },
+
+  // ── Protected: admin role ───────────────────────────────────────────────────
+  {
+    element: <ProtectedRoute requiredRole="admin" />,
+    children: [
+      { path: '/admin/dashboard', element: <AdminDashboard /> },
+    ],
+  },
+
+  // ── Catch-all ───────────────────────────────────────────────────────────────
+  { path: '*', element: <Navigate to="/" replace /> },
 ])
 
-// ---------------------------------------------------------------------------
-// App root — wraps the entire tree with AuthProvider so every route can
-// access auth state, then hands control to the router.
-// ---------------------------------------------------------------------------
 export default function App() {
   return (
-    <AuthProvider>
+    <Suspense fallback={<PageLoader />}>
       <RouterProvider router={router} />
-    </AuthProvider>
+    </Suspense>
   )
 }

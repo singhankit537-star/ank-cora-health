@@ -1,0 +1,35 @@
+{
+  "name": "@cora/ui",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "packages/ui/src",
+  "targets": {
+    "storybook": {
+      "command": "storybook dev -p 6006",
+      "options": {
+        "cwd": "{projectRoot}"
+      }
+    },
+    "build-storybook": {
+      "command": "storybook build",
+      "options": {
+        "cwd": "{projectRoot}"
+      },
+      "cache": true
+    },
+    "test": {
+      "command": "vitest run",
+      "options": {
+        "cwd": "{projectRoot}"
+      },
+      "cache": true
+    },
+    "test:coverage": {
+      "command": "vitest run --coverage",
+      "options": {
+        "cwd": "{projectRoot}"
+      }
+    }
+  },
+  "tags": ["type:lib", "scope:ui"]
+}

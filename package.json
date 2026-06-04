@@ -1,32 +1,30 @@
 {
-  "name": "project-prep",
+  "name": "ank-cora-health",
   "version": "1.0.0",
   "description": "",
   "private": true,
   "workspaces": [
-    "frontend",
-    "backend"
+    "apps/*",
+    "packages/*"
   ],
   "scripts": {
-    "dev": "concurrently -n backend,frontend -c blue,green \"npm run dev --workspace backend\" \"npm run dev --workspace frontend\"",
-    "dev:backend": "npm run dev --workspace backend",
-    "dev:frontend": "npm run dev --workspace frontend",
-    "build": "npm run build --workspace frontend",
-    "start": "npm run start --workspace backend"
+    "dev": "concurrently -n server,web -c blue,green \"nx dev @cora/server\" \"nx dev @cora/web\"",
+    "dev:server": "nx dev @cora/server",
+    "dev:web": "nx dev @cora/web",
+    "build": "nx build @cora/web",
+    "build:all": "nx run-many -t build",
+    "start": "nx start @cora/server",
+    "test": "nx run-many -t test",
+    "test:web": "nx test @cora/web",
+    "test:server": "nx test @cora/server",
+    "test:ui": "nx test @cora/ui",
+    "storybook": "nx storybook @cora/ui",
+    "lint": "nx run-many -t lint"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/karambirsingh2/project-prep.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/karambirsingh2/project-prep/issues"
-  },
-  "homepage": "https://github.com/karambirsingh2/project-prep#readme"
-  ,
   "devDependencies": {
-    "concurrently": "^9.2.1"
+    "concurrently": "^9.2.1",
+    "esbuild": "^0.28.0",
+    "nx": "^20.0.0",
+    "vite": "^6.0.0"
   }
 }

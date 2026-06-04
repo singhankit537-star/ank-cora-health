@@ -1,123 +1,147 @@
 import { useState } from 'react'
-import { primaryNav, topNav } from '../../data/navigation'
-import Button from '../ui/Button'
-import Container from '../ui/Container'
-import NavDropdown from './NavDropdown'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { useAppSelector, useAppDispatch } from '@/store/hooks'
+import { logout } from '@/store/slices/authSlice'
 
-const PHONE = '1.866.443.2672'
+interface NavItem {
+  label: string
+  to: string
+}
+
+const NAV_ITEMS: NavItem[] = [
+  { label: 'Home', to: '/' },
+  { label: 'What We Treat', to: '/what-we-treat' },
+  { label: 'How We Can Help', to: '/how-we-can-help' },
+  { label: 'Locations', to: '/#locations' },
+]
 
 export default function Header() {
-  const [mobileOpen, setMobileOpen] = useState(false)
+  const dispatch = useAppDispatch()
+  const navigate = useNavigate()
+  const { token } = useAppSelector((s) => s.auth)
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  const handleLogout = () => {
+    dispatch(logout())
+    navigate('/')
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') setMenuOpen(false)
+  }
+
+  const navLinkClass = ({ isActive }: { isActive: boolean }) =>
+    `text-sm font-medium transition ${
+      isActive
+        ? 'text-white border-b-2 border-cora-lime pb-0.5'
+        : 'text-white/80 hover:text-white'
+    }`
 
   return (
-    <header className="sticky top-0 z-40 bg-white shadow-sm">
-      <Container>
-        <div className="flex items-center justify-between gap-4 py-3 lg:py-4">
-          <a href="/" className="flex shrink-0 items-center gap-2">
-            <CoraLogo />
-            <span className="hidden text-xl font-bold text-cora-navy sm:inline">
-              CORA Physical Therapy
-            </span>
-          </a>
+    <header className="bg-cora-navy" onKeyDown={handleKeyDown}>
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+        {/* Logo */}
+        <NavLink to="/" className="flex items-center" aria-label="Ank Cora Health home">
+          <span className="text-xl font-bold text-white">CORA</span>
+          <span className="ml-1 text-xl font-light text-white/80">Health</span>
+        </NavLink>
 
-          <div className="hidden items-center gap-2 lg:flex">
-            <a
-              href={`tel:${PHONE.replace(/\./g, '')}`}
-              className="text-sm font-semibold text-cora-blue hover:underline"
+        {/* Desktop nav */}
+        <nav className="hidden items-center gap-6 md:flex" aria-label="Main navigation">
+          {NAV_ITEMS.map(({ label, to }) => (
+            <NavLink key={to} to={to} className={navLinkClass} end={to === '/'}>
+              {label}
+            </NavLink>
+          ))}
+
+          {token ? (
+            <button
+              onClick={handleLogout}
+              aria-label="Log out"
+              className="rounded-full bg-cora-orange px-5 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-orange-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cora-orange focus-visible:ring-offset-2"
             >
-              {PHONE}
-            </a>
-            <Button variant="secondary" size="sm" href="#contact">
-              Contact
-            </Button>
-          </div>
+              Log out
+            </button>
+          ) : (
+            <NavLink
+              to="/login"
+              className="rounded-full bg-cora-orange px-5 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-orange-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cora-orange focus-visible:ring-offset-2"
+            >
+              Login
+            </NavLink>
+          )}
+        </nav>
 
-          <button
-            type="button"
-            className="rounded p-2 text-cora-navy lg:hidden"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-            aria-expanded={mobileOpen}
-          >
-            {mobileOpen ? (
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            )}
-          </button>
-        </div>
-      </Container>
+        {/* Mobile hamburger */}
+        <button
+          className="flex flex-col gap-1.5 p-2 text-white md:hidden"
+          onClick={() => setMenuOpen((prev) => !prev)}
+          aria-label="Toggle navigation menu"
+          aria-expanded={menuOpen}
+          aria-controls="mobile-menu"
+        >
+          <span
+            className={`block h-0.5 w-6 bg-current transition-transform ${menuOpen ? 'translate-y-2 rotate-45' : ''}`}
+          />
+          <span
+            className={`block h-0.5 w-6 bg-current transition-opacity ${menuOpen ? 'opacity-0' : ''}`}
+          />
+          <span
+            className={`block h-0.5 w-6 bg-current transition-transform ${menuOpen ? '-translate-y-2 -rotate-45' : ''}`}
+          />
+        </button>
+      </div>
 
-      <nav
-        className="hidden border-t border-gray-100 bg-white lg:block"
-        aria-label="Main navigation"
-      >
-        <Container>
-          <ul className="flex flex-wrap items-center">
-            {primaryNav.map((item) => (
-              <NavDropdown
-                key={item.label}
-                label={item.label}
-                href={item.href}
-                items={item.children}
-              />
+      {/* Mobile menu */}
+      {menuOpen && (
+        <nav
+          id="mobile-menu"
+          className="border-t border-white/10 bg-cora-navy px-4 pb-4 md:hidden"
+          aria-label="Mobile navigation"
+        >
+          <ul className="flex flex-col gap-2 pt-4">
+            {NAV_ITEMS.map(({ label, to }) => (
+              <li key={to}>
+                <NavLink
+                  to={to}
+                  className={({ isActive }) =>
+                    `block rounded px-3 py-2 text-sm font-medium ${
+                      isActive ? 'bg-white/10 text-white' : 'text-white/80 hover:text-white'
+                    }`
+                  }
+                  end={to === '/'}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {label}
+                </NavLink>
+              </li>
             ))}
+            <li>
+              {token ? (
+                <button
+                  onClick={() => {
+                    setMenuOpen(false)
+                    handleLogout()
+                  }}
+                  className="block w-full rounded-full bg-cora-orange px-3 py-2 text-center text-sm font-semibold text-white transition-colors hover:bg-orange-600"
+                >
+                  Log out
+                </button>
+              ) : (
+                <NavLink
+                  to="/login"
+                  onClick={() => setMenuOpen(false)}
+                  className="block rounded-full bg-cora-orange px-3 py-2 text-center text-sm font-semibold text-white transition-colors hover:bg-orange-600"
+                >
+                  Login
+                </NavLink>
+              )}
+            </li>
           </ul>
-        </Container>
-      </nav>
-
-      {mobileOpen && (
-        <MobileNav onClose={() => setMobileOpen(false)} />
+        </nav>
       )}
     </header>
   )
 }
 
-interface MobileNavProps {
-  onClose: () => void
-}
-
-function MobileNav({ onClose }: MobileNavProps) {
-  return (
-    <nav
-      className="border-t border-gray-100 bg-white lg:hidden"
-      aria-label="Mobile navigation"
-    >
-      <Container className="max-h-[70vh] overflow-y-auto py-4">
-        <ul className="space-y-1">
-          {[...primaryNav, ...topNav].map((item) => (
-            <li key={item.label}>
-              <a
-                href={item.href}
-                onClick={onClose}
-                className="block rounded-md px-3 py-2.5 text-cora-navy hover:bg-cora-sky"
-              >
-                {item.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-        <div className="mt-4 space-y-2 border-t border-gray-100 pt-4">
-          <a href={`tel:${PHONE.replace(/\./g, '')}`} className="block font-semibold text-cora-blue">
-            {PHONE}
-          </a>
-          <Button variant="secondary" href="#contact" className="w-full">
-            Contact
-          </Button>
-        </div>
-      </Container>
-    </nav>
-  )
-}
-
-function CoraLogo() {
-  return (
-    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cora-blue text-lg font-bold text-white">
-      C
-    </div>
-  )
-}
+export { Header }

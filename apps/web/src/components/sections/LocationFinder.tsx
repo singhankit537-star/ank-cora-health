@@ -1,77 +1,58 @@
-import { useState } from 'react'
-import type { ChangeEvent, FormEvent } from 'react'
-import Button from '../ui/Button'
-import Container from '../ui/Container'
-import Input from '../ui/Input'
-import SectionHeading from '../ui/SectionHeading'
-import Select from '../ui/Select'
+import React from 'react'
+import { useAppSelector } from '@/store/hooks'
+import type { Location } from '@/types'
 
-const radiusOptions = [
-  { value: '10', label: '10 mi' },
-  { value: '25', label: '25 mi' },
-  { value: '50', label: '50 mi' },
-  { value: '100', label: '100 mi' },
-  { value: '200', label: '200 mi' },
-  { value: '500', label: '500 mi' },
-]
+// ── Sub-components ────────────────────────────────────────────────────────────
+function LocationCard({ location }: { location: Location }) {
+  return (
+    <article className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-black/5">
+      <h3 className="font-semibold text-cora-navy">
+        {location.city}, {location.state}
+      </h3>
+      <p className="mt-1 text-sm text-gray-500">{location.address}</p>
+      <p className="mt-1 text-sm font-medium text-cora-navy">{location.phone}</p>
+    </article>
+  )
+}
 
-const resultOptions = [
-  { value: '8', label: '8' },
-  { value: '25', label: '25' },
-  { value: '50', label: '50' },
-  { value: '75', label: '75' },
-  { value: '125', label: '125' },
-]
+function SkeletonCard() {
+  return (
+    <div className="animate-pulse rounded-xl bg-white p-5 shadow-sm ring-1 ring-black/5">
+      <div className="h-4 w-32 rounded bg-gray-200" />
+      <div className="mt-2 h-3 w-48 rounded bg-gray-200" />
+      <div className="mt-1 h-3 w-24 rounded bg-gray-200" />
+    </div>
+  )
+}
 
-export default function LocationFinder() {
-  const [zip, setZip] = useState('')
-
-  const handleSearch = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    // Placeholder for location API integration
-  }
+// ── Main component ────────────────────────────────────────────────────────────
+const LocationFinder: React.FC = () => {
+  const { locations, loading, error } = useAppSelector((s) => s.locations)
 
   return (
-    <section id="locations" className="bg-cora-light py-16 lg:py-24">
-      <Container>
-        <SectionHeading
-          title="Find A Location Near You"
-          className="mb-10"
-        />
+    <section id="locations" className="bg-gray-50 py-16 lg:py-24" aria-labelledby="locations-heading">
+      <div className="mx-auto max-w-6xl px-4">
+        <h2 id="locations-heading" className="mb-2 text-center text-3xl font-bold text-cora-navy">
+          Find a Location Near You
+        </h2>
+        <p className="mb-10 text-center text-gray-500">
+          CORA Health has clinics across Florida.
+        </p>
 
-        <form
-          onSubmit={handleSearch}
-          className="mx-auto max-w-3xl rounded-xl bg-white p-6 shadow-lg sm:p-8"
-        >
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <Input
-              label="ZIP or City"
-              placeholder="Enter ZIP or city"
-              value={zip}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setZip(e.target.value)}
-              wrapperClassName="sm:col-span-2 lg:col-span-2"
-            />
-            <Select
-              label="Search radius"
-              options={radiusOptions}
-              defaultValue="50"
-            />
-            <Select
-              label="Results"
-              options={resultOptions}
-              defaultValue="8"
-            />
-          </div>
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
-            <Button type="submit" variant="secondary" size="lg">
-              Search Locations
-            </Button>
-            <Button variant="ghost" href="#all-locations">
-              See All Locations
-            </Button>
-          </div>
-        </form>
-      </Container>
+        {error && (
+          <p role="alert" className="mb-6 text-center text-sm text-red-600">
+            Unable to load locations. Please try again.
+          </p>
+        )}
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {loading
+            ? Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} />)
+            : locations.map((loc) => <LocationCard key={loc.id} location={loc} />)}
+        </div>
+      </div>
     </section>
   )
 }
+
+export default LocationFinder
