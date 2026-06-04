@@ -25,7 +25,7 @@ export default function Footer() {
               {PHONE}
             </a>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Button variant="primary" href="#appointment">
+              <Button variant="primary" onClick={() => navigate('/appointment')}>
                 Book An Appointment
               </Button>
               <Button variant="outline" onClick={() => navigate('/payment-history')} className="border-white text-white hover:bg-white/10">

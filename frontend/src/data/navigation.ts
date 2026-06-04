@@ -81,7 +81,7 @@ export const topNav: NavItem[] = [
     ],
   },
   { label: 'Locations', href: '/locations' },
-  { label: 'Pay Bill', href: '#pay-bill' },
+  { label: 'Pay Bill', href: '/payment-history' },
   { label: 'Apply Now', href: '#apply', highlight: true },
 ]
 
