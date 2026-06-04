@@ -24,8 +24,7 @@
   "bugs": {
     "url": "https://github.com/karambirsingh2/project-prep/issues"
   },
-  "homepage": "https://github.com/karambirsingh2/project-prep#readme"
-  ,
+  "homepage": "https://github.com/karambirsingh2/project-prep#readme",
   "devDependencies": {
     "concurrently": "^9.2.1"
   }

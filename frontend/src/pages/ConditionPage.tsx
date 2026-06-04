@@ -1,4 +1,4 @@
-import { useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import AnnouncementBar from '../components/layout/AnnouncementBar'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
@@ -23,6 +23,7 @@ export default function ConditionPage() {
 }
 
 function ConditionContent({ condition }: { condition: Condition }) {
+  const navigate = useNavigate()
   const {
     name,
     heroImage,
@@ -92,7 +93,7 @@ function ConditionContent({ condition }: { condition: Condition }) {
               </ul>
               <Button
                 variant="secondary"
-                href="#appointment"
+                onClick={() => navigate('/login')}
                 className="mt-6 w-full gap-2"
               >
                 <CheckIcon />

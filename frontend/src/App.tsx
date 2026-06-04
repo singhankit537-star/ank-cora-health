@@ -7,6 +7,7 @@ import {
   ScrollRestoration,
 } from 'react-router'
 import { useLinkInterceptor } from './hooks/useLinkInterceptor'
+import ProtectedRoute from './components/auth/ProtectedRoute'
 
 // HomePage and ConditionPage are direct-landing destinations (root URL + search
 // traffic). They ship in the main bundle so there is zero extra network
@@ -19,6 +20,9 @@ import ConditionPage from './pages/ConditionPage'
 const AppointmentPage = lazy(() => import('./pages/AppointmentPage'))
 const FindLocationPage = lazy(() => import('./pages/FindLocationPage'))
 const LeadershipPage = lazy(() => import('./pages/LeadershipPage'))
+const LoginPage = lazy(() => import('./pages/LoginPage'))
+const DashboardPage = lazy(() => import('./pages/DashboardPage'))
+const PaymentHistoryPage = lazy(() => import('./pages/PaymentHistory'))
 
 // Full-screen fallback shown while a page chunk is being fetched.
 function PageFallback() {
@@ -63,6 +67,16 @@ const router = createBrowserRouter([
       { path: 'appointment', element: lazyRoute(<AppointmentPage />) },
       { path: 'locations', element: lazyRoute(<FindLocationPage />) },
       { path: 'leadership', element: lazyRoute(<LeadershipPage />) },
+      { path: 'login', element: lazyRoute(<LoginPage />) },
+      // Protected: only reachable once authenticated, else redirected to /login.
+      {
+        element: <ProtectedRoute />,
+        children: [{ path: 'dashboard', element: lazyRoute(<DashboardPage />) }],
+      },
+      {
+        element: <ProtectedRoute />,
+        children: [{ path: 'payment-history', element: lazyRoute(<PaymentHistoryPage />) }],
+      }
     ],
   },
 ])

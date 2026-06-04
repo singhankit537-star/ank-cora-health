@@ -2,10 +2,12 @@ import { footerLegal, footerQuickLinks, socialLinks } from '../../data/navigatio
 import Button from '../ui/Button'
 import Container from '../ui/Container'
 import TriangleAccent from '../ui/TriangleAccent'
+import { useNavigate } from 'react-router'
 
 const PHONE = '1.866.443.2672'
 
 export default function Footer() {
+  const navigate = useNavigate()
   return (
     <footer className="bg-cora-navy text-white">
       <TriangleAccent flip className="-mt-px [&_polygon]:fill-cora-navy" />
@@ -26,7 +28,7 @@ export default function Footer() {
               <Button variant="primary" href="#appointment">
                 Book An Appointment
               </Button>
-              <Button variant="outline" href="#pay-bill" className="border-white text-white hover:bg-white/10">
+              <Button variant="outline" onClick={() => navigate('/payment-history')} className="border-white text-white hover:bg-white/10">
                 Pay My Bill
               </Button>
             </div>

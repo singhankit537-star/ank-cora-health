@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router'
 import { painAreas } from '../../data/painAreas'
 import type { PainArea } from '../../data/painAreas'
 import Button from '../ui/Button'
@@ -5,6 +6,8 @@ import Container from '../ui/Container'
 import SectionHeading from '../ui/SectionHeading'
 
 export default function PainGrid() {
+  const navigate = useNavigate()
+
   return (
     <section id="treat" className="bg-white py-16 lg:py-24">
       <Container>
@@ -17,7 +20,7 @@ export default function PainGrid() {
         </div>
 
         <div className="mt-12 text-center">
-          <Button variant="secondary" size="lg" href="#screening">
+          <Button variant="secondary" size="lg" onClick={() => navigate('/login')}>
             Schedule My Free Screening
           </Button>
         </div>
