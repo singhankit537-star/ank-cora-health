@@ -17,6 +17,8 @@ export type {
   HealthStatus,
   HomePageData,
   Location,
+  PaymentPortal,
+  PaymentPortalType,
   Service,
   Testimonial,
 } from './types';

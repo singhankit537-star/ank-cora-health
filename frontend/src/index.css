@@ -2,6 +2,7 @@
 
 @source "../../packages/ui-mfe/src/**/*.{ts,tsx}";
 @source "../../packages/appointment-mfe/src/**/*.{ts,tsx}";
+@source "../../packages/pay-bill-mfe/src/**/*.{ts,tsx}";
 
 @theme {
   --font-sans: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;

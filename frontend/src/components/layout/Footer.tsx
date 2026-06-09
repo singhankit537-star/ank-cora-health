@@ -39,6 +39,11 @@ export const Footer: React.FC = () => {
                   Locations
                 </Link>
               </li>
+              <li>
+                <Link to="/pay-bill" className="hover:text-white transition">
+                  Pay Bill
+                </Link>
+              </li>
             </ul>
           </div>
 

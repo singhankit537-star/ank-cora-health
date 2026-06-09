@@ -17,6 +17,11 @@ export { ServiceBadge } from './components/ServiceBadge';
 export type { ServiceBadgeProps } from './components/ServiceBadge';
 export { AppointmentBookingCard } from './components/AppointmentBookingCard';
 export type { AppointmentBookingCardProps } from './components/AppointmentBookingCard';
+export { PaymentPortalButton } from './components/PaymentPortalButton';
+export type { PaymentPortalButtonProps } from './components/PaymentPortalButton';
+export { PaymentOptionSection } from './components/PaymentOptionSection';
+export type { PaymentOptionSectionProps } from './components/PaymentOptionSection';
+export { SectionRule } from './components/SectionRule';
 export {
   SearchIcon,
   PinIcon,

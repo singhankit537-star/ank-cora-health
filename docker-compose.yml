@@ -3,6 +3,7 @@
 # Services:
 #   frontend      → http://localhost:3000  (main app)
 #   appointment   → http://localhost:3001  (standalone booking)
+#   pay-bill      → http://localhost:3003  (payment portals)
 #   ui-mfe-remote → http://localhost:3002  (Module Federation remote)
 #   backend       → http://localhost:5000  (API)
 #   storybook     → http://localhost:6006  (design docs, optional profile)
@@ -16,7 +17,7 @@ services:
       - '5000:5000'
     environment:
       - PORT=5000
-      - CORS_ORIGIN=http://localhost:3000,http://localhost:3001,http://localhost:5173,http://localhost:5174
+      - CORS_ORIGIN=http://localhost:3000,http://localhost:3001,http://localhost:3003,http://localhost:5173,http://localhost:5174,http://localhost:5175
 
   frontend:
     build:
@@ -26,6 +27,7 @@ services:
         VITE_API_URL: /api
         VITE_USE_MOCKS: 'false'
         VITE_APPOINTMENT_URL: http://localhost:3001
+        VITE_PAY_BILL_URL: http://localhost:3003
     ports:
       - '3000:80'
     depends_on:
@@ -40,6 +42,18 @@ services:
         VITE_USE_MOCKS: 'false'
     ports:
       - '3001:80'
+    depends_on:
+      - backend
+
+  pay-bill:
+    build:
+      context: .
+      dockerfile: apps/pay-bill-host/Dockerfile
+      args:
+        VITE_API_URL: /api
+        VITE_USE_MOCKS: 'false'
+    ports:
+      - '3003:80'
     depends_on:
       - backend
 

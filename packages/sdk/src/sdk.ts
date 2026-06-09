@@ -1,4 +1,5 @@
 import { createAppointmentsApi } from './apis/appointments';
+import { createPaymentsApi } from './apis/payments';
 import { createHealthApi } from './apis/health';
 import { createHomepageApi } from './apis/homepage';
 import { createLocationsApi } from './apis/locations';
@@ -15,6 +16,7 @@ export function createCoraSdk(config: CoraSdkConfig = {}) {
   const testimonials = createTestimonialsApi(client, config);
   const homepage = createHomepageApi(services, locations, testimonials);
   const appointments = createAppointmentsApi(client, config);
+  const payments = createPaymentsApi(client, config);
   const health = createHealthApi(client);
 
   return {
@@ -25,6 +27,7 @@ export function createCoraSdk(config: CoraSdkConfig = {}) {
     testimonials,
     homepage,
     appointments,
+    payments,
   };
 }
 

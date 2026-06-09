@@ -65,7 +65,7 @@ export const topNav = [
     ],
   },
   { label: 'Locations', href: '#locations' },
-  { label: 'Pay Bill', href: '#pay-bill' },
+  { label: 'Pay Bill', href: '/pay-bill' },
   { label: 'Apply Now', href: '#apply', highlight: true },
 ]
 

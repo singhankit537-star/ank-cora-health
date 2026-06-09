@@ -4,6 +4,7 @@ Monorepo with:
 - `frontend/`: React (Vite) host app
 - `packages/ui-mfe/`: Shared UI library (`@ank-cora/ui-mfe`)
 - `packages/appointment-mfe/`: Appointment booking flow (`@ank-cora/appointment-mfe`)
+- `packages/pay-bill-mfe/`: Pay bill landing (`@ank-cora/pay-bill-mfe`)
 - `packages/sdk/`: TypeScript API SDK (`@ank-cora/sdk`)
 - `backend/`: Node + Express API
 

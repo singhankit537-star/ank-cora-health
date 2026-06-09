@@ -44,6 +44,7 @@ const clinics = await sdk.appointments.searchClinics({
 | `testimonials` | `getTestimonials()` |
 | `homepage` | `getHomePageData()` |
 | `appointments` | `searchClinics(params)` |
+| `payments` | `getPortals()`, `getPortalUrl(type)` |
 | `client` | Low-level `get` / `post`, `fetchCriticalData`, `fetchResilientData` |
 
 ## Config

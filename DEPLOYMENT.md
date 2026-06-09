@@ -8,6 +8,7 @@ Each package/app in this monorepo can be built and hosted independently.
 |---------|---------------|-------------|-------------|
 | Main app | `frontend` | `app.yourdomain.com` | `3000` |
 | Appointment | `apps/appointment-host` | `appointment.yourdomain.com` | `3001` |
+| Pay Bill | `apps/pay-bill-host` | `pay.yourdomain.com` | `3003` |
 | UI remote (MFE) | `packages/ui-mfe` federation build | `ui.yourdomain.com` | `3002` |
 | API | `backend` | `api.yourdomain.com` | `5000` |
 | Design docs | `packages/ui-mfe` Storybook | `design.yourdomain.com` | `6006` |
@@ -27,6 +28,7 @@ npm run docker:docs
 |-----|---------|
 | http://localhost:3000 | Main frontend |
 | http://localhost:3001 | Standalone appointment app |
+| http://localhost:3003 | Standalone pay bill landing |
 | http://localhost:3002 | UI Module Federation remote |
 | http://localhost:5000 | Backend API |
 
@@ -44,6 +46,9 @@ npm run dev:frontend
 # Terminal 3 — standalone appointment (port 5174)
 npm run dev:appointment
 
+# Terminal 4 — standalone pay bill (port 5175)
+npm run dev:pay-bill
+
 # Terminal 4 — UI federation remote (port 5001)
 npm run dev:federation --workspace @ank-cora/ui-mfe
 ```
@@ -58,6 +63,7 @@ VITE_USE_MOCKS=true
 
 # Point Schedule/Book buttons to standalone appointment host
 VITE_APPOINTMENT_URL=http://localhost:3001
+VITE_PAY_BILL_URL=http://localhost:3003
 
 # Optional: load UI from Module Federation remote instead of workspace bundle
 VITE_UI_MFE_REMOTE=http://localhost:3002/remoteEntry.js
@@ -88,6 +94,7 @@ npm run build:sdk          # packages/sdk/dist
 npm run build:ui-mfe      # packages/ui-mfe/dist (types)
 npm run build:federation  # packages/ui-mfe/dist-federation (remoteEntry.js)
 npm run build:appointment # apps/appointment-host/dist
+npm run build:pay-bill    # apps/pay-bill-host/dist
 npm run build             # frontend/dist
 npm run build-storybook   # packages/ui-mfe/storybook-static
 ```
@@ -109,6 +116,8 @@ Deploy each Docker image to its own service:
 |------|--------|----------|
 | Integrated | `VITE_APPOINTMENT_URL` unset | Buttons go to `/appointment` in main app |
 | External | `VITE_APPOINTMENT_URL=https://appointment.yourdomain.com` | Full redirect to standalone app |
+
+Same pattern for pay bill with `VITE_PAY_BILL_URL` → `/pay-bill` vs external host.
 
 ### 3. Module Federation (runtime UI remote)
 

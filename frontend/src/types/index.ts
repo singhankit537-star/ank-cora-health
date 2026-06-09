@@ -6,6 +6,8 @@ export type {
   HealthStatus,
   HomePageData,
   Location,
+  PaymentPortal,
+  PaymentPortalType,
   Service,
   Testimonial,
 } from '@ank-cora/sdk';

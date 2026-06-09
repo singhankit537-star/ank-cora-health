@@ -1,0 +1,21 @@
+@import 'tailwindcss';
+
+@source "../../../packages/ui-mfe/src/**/*.{ts,tsx}";
+@source "../../../packages/pay-bill-mfe/src/**/*.{ts,tsx}";
+
+@theme {
+  --font-sans: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+  --color-cora-navy: #0c3d6e;
+  --color-cora-blue: #0072bc;
+  --color-cora-teal: #00a9e0;
+  --color-cora-sky: #e8f4fa;
+  --color-cora-orange: #f57c00;
+  --color-cora-gray: #5a6a7a;
+  --color-cora-light: #f5f8fa;
+}
+
+@layer base {
+  body {
+    @apply m-0 font-sans text-gray-800 antialiased;
+  }
+}

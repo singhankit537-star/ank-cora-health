@@ -14,6 +14,7 @@ const Locations = React.lazy(() => import('@pages/Locations'));
 const About = React.lazy(() => import('@pages/About'));
 const Contact = React.lazy(() => import('@pages/Contact'));
 const Appointment = React.lazy(() => import('@pages/Appointment'));
+const PayBill = React.lazy(() => import('@pages/PayBill'));
 
 // Loading component
 const PageLoader: React.FC = () => (
@@ -55,6 +56,7 @@ export const App: React.FC = () => {
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/appointment" element={<Appointment />} />
+            <Route path="/pay-bill" element={<PayBill />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

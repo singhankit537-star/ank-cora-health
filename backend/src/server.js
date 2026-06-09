@@ -1,7 +1,7 @@
 import cors from 'cors'
 import dotenv from 'dotenv'
 import express from 'express'
-import { locations, searchClinics, services, testimonials } from './data.js'
+import { locations, paymentPortals, searchClinics, services, testimonials } from './data.js'
 
 dotenv.config()
 
@@ -28,6 +28,10 @@ app.get('/api/locations', (_req, res) => {
 
 app.get('/api/testimonials', (_req, res) => {
   res.json(testimonials)
+})
+
+app.get('/api/payments/portals', (_req, res) => {
+  res.json(paymentPortals)
 })
 
 app.post('/api/appointments/search', (req, res) => {

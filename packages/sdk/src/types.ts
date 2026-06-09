@@ -77,6 +77,16 @@ export interface HomePageData {
   testimonials: Testimonial[];
 }
 
+export type PaymentPortalType = 'patient' | 'attorney';
+
+export interface PaymentPortal {
+  id: string;
+  type: PaymentPortalType;
+  label: string;
+  description: string;
+  url: string;
+}
+
 export interface CoraSdkConfig {
   baseUrl?: string;
   timeout?: number;

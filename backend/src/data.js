@@ -94,6 +94,23 @@ export const testimonials = [
   },
 ]
 
+export const paymentPortals = [
+  {
+    id: 'patient',
+    type: 'patient',
+    label: 'Patient Payment Portal',
+    description: 'If you are a patient making a payment, please click below.',
+    url: 'https://pay.coraphysicaltherapy.com/patient',
+  },
+  {
+    id: 'attorney',
+    type: 'attorney',
+    label: 'Attorney Payment Portal',
+    description: 'If you are an attorney making a payment, please click below.',
+    url: 'https://pay.coraphysicaltherapy.com/attorney',
+  },
+]
+
 export function searchClinics(params) {
   const query = `${params.location ?? ''} ${params.therapyType ?? ''}`.toLowerCase().trim()
   const results = locations.map((loc, i) => ({

@@ -19,6 +19,7 @@
   "dependencies": {
     "@ank-cora/ui-mfe": "1.0.0",
     "@ank-cora/appointment-mfe": "1.0.0",
+    "@ank-cora/pay-bill-mfe": "1.0.0",
     "@ank-cora/sdk": "1.0.0",
     "@reduxjs/toolkit": "^2.12.0",
     "@tailwindcss/vite": "^4.3.0",
