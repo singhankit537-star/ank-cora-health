@@ -36,6 +36,7 @@ export default defineConfig(({ mode }) => {
     ],
     resolve: {
       alias: {
+        '@ank-cora/sdk': path.resolve(__dirname, '../packages/sdk/src/index.ts'),
         '@': path.resolve(__dirname, './src'),
         '@components': path.resolve(__dirname, './src/components'),
         '@pages': path.resolve(__dirname, './src/pages'),
