@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import type React from 'react'
 import type { InputHTMLAttributes, ReactNode } from 'react'
-import AnnouncementBar from '../components/layout/AnnouncementBar'
-import Header from '../components/layout/Header'
-import Container from '../components/ui/Container'
+import AnnouncementBar from '../../components/layout/AnnouncementBar'
+import Header from '../../components/layout/Header'
+import Container from '../../components/ui/Container'
 
 const TEAM_IMAGE =
   'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?auto=format&fit=crop&q=80&w=900'

@@ -4,13 +4,8 @@ import AnnouncementBar from '../components/layout/AnnouncementBar'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
 import Container from '../components/ui/Container'
+import { usePayments } from '../hooks/usePayments'
 import type { PaymentRecord } from '../services/mockApi'
-import { useAppDispatch, useAppSelector } from '../store/hooks'
-import {
-  addPaymentRequested,
-  fetchPaymentsRequested,
-  resetAddPaymentStatus,
-} from '../store/medicalSlice'
 
 const PAYMENT_METHODS = ['Credit Card', 'Debit Card', 'Insurance', 'Cash', 'Bank Transfer']
 const PAYMENT_STATUSES: PaymentRecord['status'][] = ['Pending', 'Paid', 'Failed']
@@ -28,45 +23,32 @@ const currency = new Intl.NumberFormat(undefined, {
 })
 
 export default function PaymentHistory() {
-  const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const user = useAppSelector((state) => state.auth.user)
-  const { payments, status, error, addPaymentStatus, addPaymentError } = useAppSelector(
-    (state) => state.medical,
-  )
+
+  // All the Redux/saga wiring lives in this one hook now — the component just
+  // reads `payments` and calls `addBill`.
+  const { payments, status, error, addStatus, addError, addBill, resetAdd } = usePayments()
 
   const [form, setForm] = useState(emptyForm)
 
-  // Load this user's payments on mount / when the user changes.
-  useEffect(() => {
-    if (user) dispatch(fetchPaymentsRequested({ userId: user.id }))
-  }, [dispatch, user])
-
   // Clear the form after a successful save.
   useEffect(() => {
-    if (addPaymentStatus === 'success') {
+    if (addStatus === 'success') {
       setForm(emptyForm)
-      dispatch(resetAddPaymentStatus())
+      resetAdd()
     }
-  }, [addPaymentStatus, dispatch])
-
-  if (!user) return null // ProtectedRoute guards this, but keep TS happy.
+  }, [addStatus, resetAdd])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const amount = Number.parseFloat(form.amount)
     if (!form.description.trim() || Number.isNaN(amount) || amount <= 0) return
-    dispatch(
-      addPaymentRequested({
-        userId: user.id,
-        payment: {
-          description: form.description.trim(),
-          amount,
-          method: form.method,
-          status: form.status,
-        },
-      }),
-    )
+    addBill({
+      description: form.description.trim(),
+      amount,
+      method: form.method,
+      status: form.status,
+    })
   }
 
   const update =
@@ -80,7 +62,7 @@ export default function PaymentHistory() {
   const outstanding = payments
     .filter((p) => p.status === 'Pending')
     .reduce((sum, p) => sum + p.amount, 0)
-
+console.log('ankit payments ', payments);
   return (
     <div className="min-h-screen bg-cora-light">
       <AnnouncementBar />
@@ -125,12 +107,12 @@ export default function PaymentHistory() {
                   Log a charge or record a payment you&apos;ve made.
                 </p>
 
-                {addPaymentError && (
+                {addError && (
                   <div
                     role="alert"
                     className="mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
                   >
-                    {addPaymentError}
+                    {addError}
                   </div>
                 )}
 
@@ -185,10 +167,10 @@ export default function PaymentHistory() {
 
                   <button
                     type="submit"
-                    disabled={addPaymentStatus === 'loading'}
+                    disabled={addStatus === 'loading'}
                     className="w-full rounded-full bg-cora-orange px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-orange-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cora-orange focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
                   >
-                    {addPaymentStatus === 'loading' ? 'Saving…' : 'Add bill'}
+                    {addStatus === 'loading' ? 'Saving…' : 'Add bill'}
                   </button>
                 </form>
               </div>

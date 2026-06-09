@@ -17,7 +17,7 @@ import ConditionPage from './pages/ConditionPage'
 
 // These pages are only ever reached by navigating *within* the SPA, so the
 // lazy chunk fetch is hidden behind React Router's pending UI — no visible delay.
-const AppointmentPage = lazy(() => import('./pages/AppointmentPage'))
+const AppointmentPage = lazy(() => import('./pages/AppointmentPage/AppointmentPage'))
 const FindLocationPage = lazy(() => import('./pages/FindLocationPage'))
 const LeadershipPage = lazy(() => import('./pages/LeadershipPage'))
 const LoginPage = lazy(() => import('./pages/LoginPage'))
