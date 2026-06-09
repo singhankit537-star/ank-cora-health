@@ -6,11 +6,7 @@ import {
   startSearch,
 } from '../../store/slices/locationSlice'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import Button from '../ui/Button'
-import Container from '../ui/Container'
-import Input from '../ui/Input'
-import SectionHeading from '../ui/SectionHeading'
-import Select from '../ui/Select'
+import { Button, Container, Input, SectionHeading, Select } from '@ank-cora/ui-mfe'
 
 const radiusOptions = [
   { value: '10', label: '10 mi' },

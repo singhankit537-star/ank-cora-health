@@ -5,15 +5,27 @@
   "private": true,
   "workspaces": [
     "frontend",
-    "backend"
+    "backend",
+    "packages/*",
+    "apps/*"
   ],
   "scripts": {
     "dev": "concurrently -n backend,frontend -c blue,green \"npm run dev --workspace backend\" \"npm run dev --workspace frontend\"",
+    "dev:all": "concurrently -n backend,frontend,appointment,ui-mfe -c blue,green,magenta,yellow \"npm run dev --workspace backend\" \"npm run dev --workspace frontend\" \"npm run dev --workspace appointment-host\" \"npm run dev:federation --workspace @ank-cora/ui-mfe\"",
     "dev:backend": "npm run dev --workspace backend",
     "dev:frontend": "npm run dev --workspace frontend",
+    "dev:appointment": "npm run dev --workspace appointment-host",
     "build": "npm run build --workspace frontend",
-    "storybook": "npm run storybook --workspace frontend",
-    "build-storybook": "npm run build-storybook --workspace frontend",
+    "build:all": "npm run build:sdk && npm run build:ui-mfe && npm run build:federation && npm run build --workspace appointment-host && npm run build --workspace frontend",
+    "build:ui-mfe": "npm run build --workspace @ank-cora/ui-mfe",
+    "build:federation": "npm run build:federation --workspace @ank-cora/ui-mfe",
+    "build:appointment": "npm run build --workspace appointment-host",
+    "build:sdk": "npm run build --workspace @ank-cora/sdk",
+    "docker:up": "docker compose up --build",
+    "docker:down": "docker compose down",
+    "docker:docs": "docker compose --profile docs up --build storybook",
+    "storybook": "npm run storybook --workspace @ank-cora/ui-mfe",
+    "build-storybook": "npm run build-storybook --workspace @ank-cora/ui-mfe",
     "test": "npm run test --workspace frontend",
     "test:watch": "npm run test:watch --workspace frontend",
     "start": "npm run start --workspace backend"
@@ -32,5 +44,8 @@
   ,
   "devDependencies": {
     "concurrently": "^9.2.1"
+  },
+  "overrides": {
+    "@storybook/addon-docs": "8.6.18"
   }
 }

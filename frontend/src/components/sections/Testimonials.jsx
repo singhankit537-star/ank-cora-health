@@ -1,8 +1,7 @@
 import { testimonials } from '../../data/testimonials'
 import { setActiveIndex } from '../../store/slices/testimonialsSlice'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import Container from '../ui/Container'
-import SectionHeading from '../ui/SectionHeading'
+import { Container, SectionHeading } from '@ank-cora/ui-mfe'
 
 export default function Testimonials() {
   const dispatch = useAppDispatch()

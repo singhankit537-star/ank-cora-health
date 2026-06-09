@@ -1,7 +1,7 @@
 import AnnouncementBar from '../components/layout/AnnouncementBar'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
-import Container from '../components/ui/Container'
+import { Container } from '@ank-cora/ui-mfe'
 import { leadership } from '../data/leadership'
 
 export default function LeadershipPage() {

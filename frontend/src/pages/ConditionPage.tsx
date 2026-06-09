@@ -1,8 +1,7 @@
 import AnnouncementBar from '../components/layout/AnnouncementBar'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
-import Button from '../components/ui/Button'
-import Container from '../components/ui/Container'
+import { Button, Container } from '@ank-cora/ui-mfe'
 import { getCondition } from '../data/conditions'
 
 export default function ConditionPage({ slug }) {

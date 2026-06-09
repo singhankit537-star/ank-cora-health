@@ -13,6 +13,7 @@ const Services = React.lazy(() => import('@pages/Services'));
 const Locations = React.lazy(() => import('@pages/Locations'));
 const About = React.lazy(() => import('@pages/About'));
 const Contact = React.lazy(() => import('@pages/Contact'));
+const Appointment = React.lazy(() => import('@pages/Appointment'));
 
 // Loading component
 const PageLoader: React.FC = () => (
@@ -53,6 +54,7 @@ export const App: React.FC = () => {
             <Route path="/locations" element={<Locations />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/appointment" element={<Appointment />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

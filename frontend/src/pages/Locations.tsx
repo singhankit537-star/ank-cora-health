@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Container, SectionHeading, Card } from '@components/ui';
+import { Container, SectionHeading, Card } from '@ank-cora/ui-mfe';
 import { mockLocations } from '@services/api/mockData';
 
 const LocationCard: React.FC<{

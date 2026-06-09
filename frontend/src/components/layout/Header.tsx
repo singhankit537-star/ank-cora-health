@@ -3,8 +3,9 @@
  */
 
 import React, { useState } from 'react';
-import { Link } from 'react-router';
-import { Button } from '@components/ui';
+import { Link, useNavigate } from 'react-router';
+import { Button } from '@ank-cora/ui-mfe';
+import { goToAppointment } from '@/lib/appointment-link';
 
 const navLinks = [
   { label: 'Home', href: '/' },
@@ -16,6 +17,7 @@ const navLinks = [
 
 export const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -41,7 +43,7 @@ export const Header: React.FC = () => {
 
           {/* CTA Button */}
           <div className="hidden md:block">
-            <Button size="sm" variant="primary">
+            <Button size="sm" variant="primary" onClick={() => goToAppointment(navigate)}>
               Book Appointment
             </Button>
           </div>
@@ -82,7 +84,15 @@ export const Header: React.FC = () => {
               </Link>
             ))}
             <div className="px-4 pt-2">
-              <Button size="sm" variant="primary" fullWidth>
+              <Button
+                size="sm"
+                variant="primary"
+                fullWidth
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  goToAppointment(navigate);
+                }}
+              >
                 Book Appointment
               </Button>
             </div>

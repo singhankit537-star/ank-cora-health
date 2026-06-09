@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { Container, SectionHeading, Input, Select, Button } from '@components/ui';
+import { Container, SectionHeading, Input, Select, Button } from '@ank-cora/ui-mfe';
 
 interface FormData {
   name: string;

@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { Container, Card } from '@components/ui';
+import { Container, Card } from '@ank-cora/ui-mfe';
 
 interface Service {
   id: string;

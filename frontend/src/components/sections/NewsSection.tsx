@@ -1,8 +1,5 @@
 import { newsArticles } from '../../data/news'
-import Card from '../ui/Card'
-import Container from '../ui/Container'
-import SectionHeading from '../ui/SectionHeading'
-import TriangleAccent from '../ui/TriangleAccent'
+import { Card, Container, SectionHeading, TriangleAccent } from '@ank-cora/ui-mfe'
 
 export default function NewsSection() {
   return (

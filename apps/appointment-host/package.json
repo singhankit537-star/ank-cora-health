@@ -1,0 +1,29 @@
+{
+  "name": "appointment-host",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 5174",
+    "build": "tsc && vite build",
+    "preview": "vite preview --port 4174",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ank-cora/appointment-mfe": "1.0.0",
+    "@ank-cora/sdk": "1.0.0",
+    "@ank-cora/ui-mfe": "1.0.0",
+    "@tailwindcss/vite": "^4.3.0",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "react-router": "^7.2.0",
+    "tailwindcss": "^4.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.3.3",
+    "vite": "^6.0.0"
+  }
+}

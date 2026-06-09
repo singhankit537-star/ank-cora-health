@@ -4,9 +4,11 @@
  */
 
 import React from 'react';
+import { useNavigate } from 'react-router';
 import { homepageApi } from '@services/api/endpoints';
-import { Card, Button, Container, SectionHeading } from '@components/ui';
+import { Card, Button, Container, SectionHeading } from '@ank-cora/ui-mfe';
 import { withErrorBoundary } from '@hocs/withErrorBoundary';
+import { goToAppointment } from '@/lib/appointment-link';
 
 const ServiceCard: React.FC<{ name: string; description: string; icon: string }> = ({
   name,
@@ -39,6 +41,8 @@ const TestimonialCard: React.FC<{ author: string; content: string; rating: numbe
 );
 
 const HomePageContent: React.FC = () => {
+  const navigate = useNavigate();
+
   // Use Promise.all pattern through custom logic
   React.useEffect(() => {
     const loadData = async () => {
@@ -65,7 +69,7 @@ const HomePageContent: React.FC = () => {
               Professional physical therapy and wellness services designed for your recovery and
               well-being.
             </p>
-            <Button variant="secondary" size="lg">
+            <Button variant="secondary" size="lg" onClick={() => goToAppointment(navigate)}>
               Schedule Your Visit
             </Button>
           </div>
@@ -136,7 +140,7 @@ const HomePageContent: React.FC = () => {
         <Container>
           <div className="text-center">
             <h2 className="text-4xl font-bold mb-6">Ready to Start Your Recovery?</h2>
-            <Button variant="secondary" size="lg">
+            <Button variant="secondary" size="lg" onClick={() => goToAppointment(navigate)}>
               Book an Appointment
             </Button>
           </div>

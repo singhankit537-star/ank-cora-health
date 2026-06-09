@@ -1,0 +1,59 @@
+# Separate deploy targets — run: docker compose up --build
+#
+# Services:
+#   frontend      → http://localhost:3000  (main app)
+#   appointment   → http://localhost:3001  (standalone booking)
+#   ui-mfe-remote → http://localhost:3002  (Module Federation remote)
+#   backend       → http://localhost:5000  (API)
+#   storybook     → http://localhost:6006  (design docs, optional profile)
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - '5000:5000'
+    environment:
+      - PORT=5000
+      - CORS_ORIGIN=http://localhost:3000,http://localhost:3001,http://localhost:5173,http://localhost:5174
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        VITE_API_URL: /api
+        VITE_USE_MOCKS: 'false'
+        VITE_APPOINTMENT_URL: http://localhost:3001
+    ports:
+      - '3000:80'
+    depends_on:
+      - backend
+
+  appointment:
+    build:
+      context: .
+      dockerfile: apps/appointment-host/Dockerfile
+      args:
+        VITE_API_URL: /api
+        VITE_USE_MOCKS: 'false'
+    ports:
+      - '3001:80'
+    depends_on:
+      - backend
+
+  ui-mfe-remote:
+    build:
+      context: .
+      dockerfile: packages/ui-mfe/Dockerfile
+    ports:
+      - '3002:80'
+
+  storybook:
+    profiles: ['docs']
+    build:
+      context: .
+      dockerfile: packages/ui-mfe/Dockerfile.storybook
+    ports:
+      - '6006:80'

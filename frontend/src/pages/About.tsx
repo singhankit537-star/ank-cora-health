@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { Container, SectionHeading, Card, Button } from '@components/ui';
+import { Container, SectionHeading, Card, Button } from '@ank-cora/ui-mfe';
 
 const AboutPage: React.FC = () => {
   return (

@@ -1,0 +1,13 @@
+node_modules
+**/node_modules
+**/dist
+**/dist-federation
+**/dist-ssr
+**/storybook-static
+**/.git
+**/.env
+**/.env.*
+!**/.env.example
+**/coverage
+**/*.log
+.DS_Store

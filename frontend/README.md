@@ -34,7 +34,7 @@ npm install
 npm run dev          # Start development server
 npm run build        # Production build
 npm run test:coverage # Run tests with coverage report
-npm run storybook    # View component library
+npm run storybook    # From repo root — Storybook in @ank-cora/ui-mfe
 npm run lint         # Check code quality
 ```
 
@@ -51,7 +51,7 @@ npm run lint         # Check code quality
 | `npm run lint` | Run ESLint checks |
 | `npm run lint:fix` | Auto-fix ESLint issues |
 | `npm run format` | Format code with Prettier |
-| `npm run storybook` | Launch Storybook at port 6006 |
+| `npm run storybook` | Launch Storybook (`@ank-cora/ui-mfe`, port 6006) from repo root |
 | `npm run type-check` | Run TypeScript compiler |
 
 ## 🏗️ Project Architecture
@@ -76,7 +76,7 @@ src/
 tests/
 └── setupTests.ts    # Test configuration
 
-.storybook/          # Storybook configuration
+packages/ui-mfe/     # Storybook + shared UI (`@ank-cora/ui-mfe`)
 ```
 
 ### Key Design Patterns

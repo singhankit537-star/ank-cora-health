@@ -18,6 +18,12 @@
     "jsx": "react-jsx",
     "baseUrl": "./",
     "paths": {
+      "@ank-cora/ui-mfe": ["../packages/ui-mfe/src/index.ts"],
+      "@ank-cora/ui-mfe/*": ["../packages/ui-mfe/src/*"],
+      "@ank-cora/appointment-mfe": ["../packages/appointment-mfe/src/index.ts"],
+      "@ank-cora/appointment-mfe/*": ["../packages/appointment-mfe/src/*"],
+      "@ank-cora/sdk": ["../packages/sdk/src/index.ts"],
+      "@ank-cora/sdk/*": ["../packages/sdk/src/*"],
       "@/*": ["src/*"],
       "@components/*": ["src/components/*"],
       "@pages/*": ["src/pages/*"],

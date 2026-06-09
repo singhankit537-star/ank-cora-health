@@ -1,7 +1,4 @@
-import Button from '../ui/Button'
-import Container from '../ui/Container'
-import SectionHeading from '../ui/SectionHeading'
-import TriangleAccent from '../ui/TriangleAccent'
+import { Button, Container, SectionHeading, TriangleAccent } from '@ank-cora/ui-mfe'
 
 export default function CareerSection() {
   return (

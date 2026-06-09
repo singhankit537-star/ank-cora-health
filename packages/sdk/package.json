@@ -1,0 +1,38 @@
+{
+  "name": "@ank-cora/sdk",
+  "version": "1.0.0",
+  "description": "TypeScript SDK for Cora Health APIs",
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/karambirsingh2/project-prep.git",
+    "directory": "packages/sdk"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "npm run build",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": ["cora", "health", "sdk", "api"],
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}

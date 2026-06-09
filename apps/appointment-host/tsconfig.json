@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "strict": true,
+    "moduleResolution": "bundler",
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@ank-cora/sdk": ["../../packages/sdk/src/index.ts"],
+      "@ank-cora/ui-mfe": ["../../packages/ui-mfe/src/index.ts"],
+      "@ank-cora/appointment-mfe": ["../../packages/appointment-mfe/src/index.ts"]
+    }
+  },
+  "include": ["src"]
+}

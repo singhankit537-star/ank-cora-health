@@ -5,6 +5,9 @@ node_modules/
 dist/
 dist-ssr/
 build/
+storybook-static/
+packages/ui-mfe/storybook-static/
+packages/ui-mfe/dist-federation/
 
 # Environment
 .env
