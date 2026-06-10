@@ -26,6 +26,10 @@
   },
   "homepage": "https://github.com/karambirsingh2/project-prep#readme",
   "devDependencies": {
+    "@hookform/devtools": "^4.4.0",
     "concurrently": "^9.2.1"
+  },
+  "dependencies": {
+    "react-hook-form": "^7.78.0"
   }
 }

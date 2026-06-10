@@ -27,7 +27,7 @@ export default function Header() {
             >
               {PHONE}
             </a>
-            <Button variant="secondary" size="sm" href="#contact">
+            <Button variant="secondary" size="sm" href="/contact">
               Contact
             </Button>
           </div>
@@ -105,7 +105,7 @@ function MobileNav({ onClose }: MobileNavProps) {
           <a href={`tel:${PHONE.replace(/\./g, '')}`} className="block font-semibold text-cora-blue">
             {PHONE}
           </a>
-          <Button variant="secondary" href="#contact" className="w-full">
+          <Button variant="secondary" href="/contact" className="w-full">
             Contact
           </Button>
         </div>

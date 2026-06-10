@@ -23,6 +23,7 @@ const LeadershipPage = lazy(() => import('./pages/LeadershipPage'))
 const LoginPage = lazy(() => import('./pages/LoginPage'))
 const DashboardPage = lazy(() => import('./pages/DashboardPage'))
 const PaymentHistoryPage = lazy(() => import('./pages/PaymentHistory'))
+const ContactPage = lazy(() => import('./pages/ContactPage'))
 
 // Full-screen fallback shown while a page chunk is being fetched.
 function PageFallback() {
@@ -68,6 +69,7 @@ const router = createBrowserRouter([
       { path: 'locations', element: lazyRoute(<FindLocationPage />) },
       { path: 'leadership', element: lazyRoute(<LeadershipPage />) },
       { path: 'login', element: lazyRoute(<LoginPage />) },
+      { path: 'contact', element: lazyRoute(<ContactPage />) },
       // Protected: only reachable once authenticated, else redirected to /login.
       {
         element: <ProtectedRoute />,
