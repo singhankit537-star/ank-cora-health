@@ -1,8 +1,8 @@
-import Button from '../ui/Button'
-import Container from '../ui/Container'
-import TriangleAccent from '../ui/TriangleAccent'
-import ImageCarousel from '../ui/ImageCarousel'
-import type { CarouselImage } from '../ui/ImageCarousel'
+import Button from '../../ui/Button'
+import Container from '../../ui/Container'
+import TriangleAccent from '../../ui/TriangleAccent'
+import ImageCarousel from '../../ui/ImageCarousel'
+import type { CarouselImage } from '../../ui/ImageCarousel'
 import {useNavigate} from 'react-router'
 
 interface HeroProps {

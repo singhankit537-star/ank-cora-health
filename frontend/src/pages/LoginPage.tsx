@@ -98,6 +98,16 @@ export default function LoginPage() {
               {loading ? 'Signing in…' : 'Sign in'}
             </button>
           </form>
+
+          {/* Escape hatch back to the public site. */}
+          <button
+            type="button"
+            onClick={() => navigate('/')}
+            className="mt-6 flex w-full items-center justify-center gap-1.5 text-sm font-semibold text-cora-blue transition-colors hover:text-cora-navy"
+          >
+            <span aria-hidden="true">←</span>
+            Back to Home
+          </button>
         </div>
       </Container>
     </div>

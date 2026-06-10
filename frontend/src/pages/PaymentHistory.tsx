@@ -6,6 +6,7 @@ import Header from '../components/layout/Header'
 import Container from '../components/ui/Container'
 import { usePayments } from '../hooks/usePayments'
 import type { PaymentRecord } from '../services/mockApi'
+import { useAppSelector } from '../store/hooks'
 
 const PAYMENT_METHODS = ['Credit Card', 'Debit Card', 'Insurance', 'Cash', 'Bank Transfer']
 const PAYMENT_STATUSES: PaymentRecord['status'][] = ['Pending', 'Paid', 'Failed']
@@ -29,7 +30,11 @@ export default function PaymentHistory() {
   // reads `payments` and calls `addBill`.
   const { payments, status, error, addStatus, addError, addBill, resetAdd } = usePayments()
 
+  // Only needed for the PDF header — display value, not data flow.
+  const userName = useAppSelector((state) => state.auth.user?.name)
+
   const [form, setForm] = useState(emptyForm)
+  const [exporting, setExporting] = useState(false)
 
   // Clear the form after a successful save.
   useEffect(() => {
@@ -56,6 +61,55 @@ export default function PaymentHistory() {
     (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
       setForm((prev) => ({ ...prev, [field]: e.target.value }))
 
+  // Export the table to a PDF. jsPDF + autotable are ~150kB and most visitors
+  // never export, so we DON'T import them at the top of the file. Instead we
+  // `await import(...)` them here, inside the handler — Vite splits each into its
+  // own chunk that is fetched on the first click and never otherwise. The button
+  // shows "Exporting…" while that one-time download + render happens.
+  const handleExportPdf = async () => {
+    if (payments.length === 0 || exporting) return
+    setExporting(true)
+    try {
+      const [{ jsPDF }, { default: autoTable }] = await Promise.all([
+        import('jspdf'),
+        import('jspdf-autotable'),
+      ])
+
+      const doc = new jsPDF()
+      doc.setFontSize(16)
+      doc.setTextColor(12, 61, 110) // cora-navy
+      doc.text('CORA Physical Therapy — Payment History', 14, 18)
+
+      doc.setFontSize(10)
+      doc.setTextColor(90)
+      doc.text(`Patient: ${userName ?? '—'}`, 14, 26)
+      doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 31)
+      doc.text(
+        `Total paid: ${currency.format(totalPaid)}    Outstanding: ${currency.format(outstanding)}`,
+        14,
+        36,
+      )
+
+      autoTable(doc, {
+        startY: 42,
+        head: [['Date', 'Description', 'Method', 'Amount', 'Status']],
+        body: payments.map((p) => [
+          formatDate(p.date),
+          p.description,
+          p.method,
+          currency.format(p.amount),
+          p.status,
+        ]),
+        styles: { fontSize: 9 },
+        headStyles: { fillColor: [12, 61, 110] },
+      })
+
+      doc.save('cora-payment-history.pdf')
+    } finally {
+      setExporting(false)
+    }
+  }
+
   const totalPaid = payments
     .filter((p) => p.status === 'Paid')
     .reduce((sum, p) => sum + p.amount, 0)
@@ -78,13 +132,23 @@ console.log('ankit payments ', payments);
                 Review your bills and record a new payment.
               </p>
             </div>
-            <button
-              type="button"
-              onClick={() => navigate('/dashboard')}
-              className="self-start rounded-full border-2 border-cora-blue px-5 py-2 text-sm font-semibold text-cora-blue transition-colors hover:bg-cora-blue hover:text-white"
-            >
-              ← Back to dashboard
-            </button>
+            <div className="flex flex-wrap gap-3 self-start">
+              <button
+                type="button"
+                onClick={handleExportPdf}
+                disabled={exporting || payments.length === 0}
+                className="rounded-full bg-cora-orange px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {exporting ? 'Exporting…' : 'Export PDF'}
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate('/dashboard')}
+                className="rounded-full border-2 border-cora-blue px-5 py-2 text-sm font-semibold text-cora-blue transition-colors hover:bg-cora-blue hover:text-white"
+              >
+                ← Back to dashboard
+              </button>
+            </div>
           </div>
 
           {/* Summary */}

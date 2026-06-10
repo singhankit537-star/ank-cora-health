@@ -3,16 +3,28 @@ import AnnouncementBar from '../components/layout/AnnouncementBar'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
 import Container from '../components/ui/Container'
+import { useIntersectionObserver } from '../hooks/useIntersectionObserver'
 import { clinics, locationStates } from '../data/locations'
 import type { Clinic } from '../data/locations'
 
-// Leaflet is a heavy dependency (map engine + CSS), so the map is split into
-// its own chunk and only fetched when this page renders.
+// Leaflet is a heavy dependency (map engine + CSS, ~44kB gzipped), so the map is
+// split into its own chunk. We go one step further than route-splitting: the
+// import() is deferred until the map section scrolls near the viewport (see
+// useIntersectionObserver below), so visitors who never reach the map never pay
+// for Leaflet at all.
 const ClinicMap = lazy(() => import('../components/ui/ClinicMap'))
 
 export default function FindLocationPage() {
   const [activeState, setActiveState] = useState<string | null>(null)
   const [query, setQuery] = useState('')
+
+  // Watch the map section. `mapVisible` flips to true (and stays true) the first
+  // time the section comes within 200px of the viewport — that's the trigger to
+  // actually pull in the Leaflet chunk. rootMargin pre-loads it just before the
+  // user scrolls to it, so the map is usually ready by the time it's on screen.
+  const [mapRef, mapVisible] = useIntersectionObserver<HTMLElement>({
+    rootMargin: '200px',
+  })
 
   const visibleClinics = useMemo(() => {
     return clinics.filter((c) => {
@@ -90,18 +102,17 @@ export default function FindLocationPage() {
         </section>
 
         {/* ---- Map (markers reflect the active filter) ---- */}
-        <section aria-label="Clinic map">
-          <Suspense
-            fallback={
-              <div
-                className="h-[320px] w-full animate-pulse bg-cora-sky/30 sm:h-[420px]"
-                role="status"
-                aria-label="Loading map"
-              />
-            }
-          >
-            <ClinicMap clinics={visibleClinics} highlight={Boolean(activeState || query)} />
-          </Suspense>
+        {/* Rendered only once the section nears the viewport. The placeholder
+            reserves the map's height so the observer has a real element to watch
+            and the page doesn't jump when the map mounts. */}
+        <section ref={mapRef} aria-label="Clinic map">
+          {mapVisible ? (
+            <Suspense fallback={<MapPlaceholder />}>
+              <ClinicMap clinics={visibleClinics} highlight={Boolean(activeState || query)} />
+            </Suspense>
+          ) : (
+            <MapPlaceholder />
+          )}
         </section>
 
         {/* ---- Filter + results ---- */}
@@ -159,6 +170,18 @@ export default function FindLocationPage() {
 
       <Footer />
     </div>
+  )
+}
+
+// Height-reserving stand-in shown before the map is visible and while its chunk
+// loads. Same dimensions either way, so there's no layout shift.
+function MapPlaceholder() {
+  return (
+    <div
+      className="h-[320px] w-full animate-pulse bg-cora-sky/30 sm:h-[420px]"
+      role="status"
+      aria-label="Loading map"
+    />
   )
 }
 

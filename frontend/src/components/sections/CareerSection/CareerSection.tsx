@@ -1,7 +1,7 @@
-import Button from '../ui/Button'
-import Container from '../ui/Container'
-import SectionHeading from '../ui/SectionHeading'
-import TriangleAccent from '../ui/TriangleAccent'
+import Button from '../../ui/Button'
+import Container from '../../ui/Container'
+import SectionHeading from '../../ui/SectionHeading'
+import TriangleAccent from '../../ui/TriangleAccent'
 
 export default function CareerSection() {
   return (
