@@ -7,9 +7,14 @@ import Container from '../components/ui/Container'
 import { usePayments } from '../hooks/usePayments'
 import type { PaymentRecord } from '../services/mockApi'
 import { useAppSelector } from '../store/hooks'
-
-const PAYMENT_METHODS = ['Credit Card', 'Debit Card', 'Insurance', 'Cash', 'Bank Transfer']
-const PAYMENT_STATUSES: PaymentRecord['status'][] = ['Pending', 'Paid', 'Failed']
+import {
+  APP_NAME,
+  CORA_NAVY_RGB,
+  currencyFormatter as currency,
+  PAYMENT_METHODS,
+  PAYMENT_STATUSES,
+  ROUTES,
+} from '@/constants'
 
 const emptyForm = {
   description: '',
@@ -17,11 +22,6 @@ const emptyForm = {
   method: PAYMENT_METHODS[0],
   status: 'Pending' as PaymentRecord['status'],
 }
-
-const currency = new Intl.NumberFormat(undefined, {
-  style: 'currency',
-  currency: 'USD',
-})
 
 export default function PaymentHistory() {
   const navigate = useNavigate()
@@ -77,8 +77,8 @@ export default function PaymentHistory() {
 
       const doc = new jsPDF()
       doc.setFontSize(16)
-      doc.setTextColor(12, 61, 110) // cora-navy
-      doc.text('CORA Physical Therapy — Payment History', 14, 18)
+      doc.setTextColor(...CORA_NAVY_RGB)
+      doc.text(`${APP_NAME} — Payment History`, 14, 18)
 
       doc.setFontSize(10)
       doc.setTextColor(90)
@@ -101,7 +101,7 @@ export default function PaymentHistory() {
           p.status,
         ]),
         styles: { fontSize: 9 },
-        headStyles: { fillColor: [12, 61, 110] },
+        headStyles: { fillColor: CORA_NAVY_RGB },
       })
 
       doc.save('cora-payment-history.pdf')
@@ -116,7 +116,6 @@ export default function PaymentHistory() {
   const outstanding = payments
     .filter((p) => p.status === 'Pending')
     .reduce((sum, p) => sum + p.amount, 0)
-console.log('ankit payments ', payments);
   return (
     <div className="min-h-screen bg-cora-light">
       <AnnouncementBar />
@@ -143,7 +142,7 @@ console.log('ankit payments ', payments);
               </button>
               <button
                 type="button"
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate(ROUTES.dashboard)}
                 className="rounded-full border-2 border-cora-blue px-5 py-2 text-sm font-semibold text-cora-blue transition-colors hover:bg-cora-blue hover:text-white"
               >
                 ← Back to dashboard

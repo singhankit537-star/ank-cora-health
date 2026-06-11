@@ -3,6 +3,7 @@ import Button from '../ui/Button'
 import Container from '../ui/Container'
 import TriangleAccent from '../ui/TriangleAccent'
 import { useNavigate } from 'react-router'
+import { ROUTES } from '@/constants'
 
 const PHONE = '1.866.443.2672'
 
@@ -25,10 +26,10 @@ export default function Footer() {
               {PHONE}
             </a>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Button variant="primary" onClick={() => navigate('/appointment')}>
+              <Button variant="primary" onClick={() => navigate(ROUTES.appointment)}>
                 Book An Appointment
               </Button>
-              <Button variant="outline" onClick={() => navigate('/payment-history')} className="border-white text-white hover:bg-white/10">
+              <Button variant="outline" onClick={() => navigate(ROUTES.paymentHistory)} className="border-white text-white hover:bg-white/10">
                 Pay My Bill
               </Button>
             </div>
