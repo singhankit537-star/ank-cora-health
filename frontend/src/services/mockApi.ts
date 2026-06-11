@@ -45,6 +45,15 @@ interface Credentials {
   password: string
 }
 
+// A purchasable therapy plan shown on the public "Available Therapy List" page.
+export interface TherapyPlan {
+  id: string
+  name: string // therapy plan name (maps to a bill's description)
+  type: string // therapy type, e.g. "Physical Therapy"
+  amount: number // price in USD (maps to a bill's amount)
+  days: number // number of therapy days the plan covers
+}
+
 // --- Seed data -------------------------------------------------------------
 
 interface DemoAccount {
@@ -53,6 +62,18 @@ interface DemoAccount {
   records: MedicalRecord[]
   payments: PaymentRecord[]
 }
+
+// Public catalogue of therapy plans — no auth required to browse.
+const therapyPlans: TherapyPlan[] = [
+  { id: 't-pt-starter', name: 'Physical Therapy — Starter', type: 'Physical Therapy', amount: 150, days: 5 },
+  { id: 't-pt-recovery', name: 'Physical Therapy — Recovery', type: 'Physical Therapy', amount: 420, days: 15 },
+  { id: 't-pt-complete', name: 'Physical Therapy — Complete', type: 'Physical Therapy', amount: 780, days: 30 },
+  { id: 't-ot-essentials', name: 'Occupational Therapy — Essentials', type: 'Occupational Therapy', amount: 360, days: 12 },
+  { id: 't-pelvic-health', name: 'Pelvic Health Program', type: 'Pelvic Health', amount: 540, days: 18 },
+  { id: 't-sports-peak', name: 'Sports Performance — Peak', type: 'Sports Performance', amount: 660, days: 20 },
+  { id: 't-manual-relief', name: 'Manual Therapy — Relief', type: 'Manual Therapy', amount: 240, days: 8 },
+  { id: 't-dry-needling', name: 'Dry Needling Package', type: 'Dry Needling', amount: 200, days: 6 },
+]
 
 const accounts: Record<string, DemoAccount> = {
   'jane.doe@demo.com': {
@@ -191,6 +212,11 @@ export function login({ email, password }: Credentials): Promise<LoginResult> {
     return reject('Invalid email or password. Try a demo account below.')
   }
   return delay({ user: account.user, token: `demo-token-${account.user.id}` })
+}
+
+// Public — anyone can browse the therapy catalogue.
+export function getTherapies(): Promise<TherapyPlan[]> {
+  return delay([...therapyPlans])
 }
 
 export function getRecords(userId: string): Promise<MedicalRecord[]> {

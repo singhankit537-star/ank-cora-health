@@ -16,6 +16,7 @@ export const CORA_NAVY_RGB: [number, number, number] = [12, 61, 110]
 // string literals so a path change happens in one place.
 export const ROUTES = {
   home: '/',
+  therapies: '/therapies',
   appointment: '/appointment',
   locations: '/locations',
   leadership: '/leadership',
@@ -38,7 +39,7 @@ export const PAYMENT_METHODS = [
 export const PAYMENT_STATUSES: PaymentRecord['status'][] = ['Pending', 'Paid', 'Failed']
 
 // Default currency formatter shared across pages.
-export const CURRENCY_CODE = 'USD'
+export const CURRENCY_CODE = 'INR'
 
 export const currencyFormatter = new Intl.NumberFormat(undefined, {
   style: 'currency',

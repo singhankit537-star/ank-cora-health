@@ -27,7 +27,7 @@ export const primaryNav: NavItem[] = [
     label: 'How We Can Help',
     href: '#help',
     children: [
-      'Physical Therapy',
+      { label: 'Physical Therapy', href: '/therapies' },
       'Occupational Therapy',
       'Pelvic Health',
       'Sports Performance',

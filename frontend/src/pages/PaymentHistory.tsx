@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
+import type { BuyTherapyState } from './TherapyListPage'
 import AnnouncementBar from '../components/layout/AnnouncementBar'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
@@ -26,6 +27,11 @@ const emptyForm = {
 export default function PaymentHistory() {
   const navigate = useNavigate()
 
+  // When the user arrives via a "Buy" button on the therapy list, the chosen
+  // plan's name + amount are passed in router state to prefill the form.
+  const location = useLocation()
+  const buy = location.state as BuyTherapyState | null
+
   // All the Redux/saga wiring lives in this one hook now — the component just
   // reads `payments` and calls `addBill`.
   const { payments, status, error, addStatus, addError, addBill, resetAdd } = usePayments()
@@ -33,7 +39,11 @@ export default function PaymentHistory() {
   // Only needed for the PDF header — display value, not data flow.
   const userName = useAppSelector((state) => state.auth.user?.name)
 
-  const [form, setForm] = useState(emptyForm)
+  const [form, setForm] = useState(() => ({
+    ...emptyForm,
+    description: buy?.description ?? emptyForm.description,
+    amount: buy?.amount != null ? String(buy.amount) : emptyForm.amount,
+  }))
   const [exporting, setExporting] = useState(false)
 
   // Clear the form after a successful save.
