@@ -10,7 +10,7 @@ import { store } from './store'
 // navigating back to a page doesn't refetch the catalogue every time.
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: { staleTime: 5 * 30 * 1000 },
+    queries: { staleTime: 5 * 60 * 1000 },
   },
 })
 

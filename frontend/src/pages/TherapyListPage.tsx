@@ -6,17 +6,12 @@ import Container from '@/components/ui/Container'
 import { currencyFormatter as currency, ROUTES } from '@/constants'
 import { useTherapies } from '@/hooks/useTherapies'
 import type { TherapyPlan } from '@/services/mockApi'
-
-// Shape of the router state we hand to the Pay Bill form so it can prefill the
-// "Add a new bill" form. Description ← plan name, Amount ← plan amount.
-export interface BuyTherapyState {
-  description: string
-  amount: number
-}
+import type { BuyTherapyState } from '@/types/payment'
 
 export default function TherapyListPage() {
   const navigate = useNavigate()
-  const { data: therapies, isLoading, isError, error } = useTherapies()
+  const { data, isLoading, isError, error } = useTherapies()
+  const therapies = data ?? []
 
   const handleBuy = (plan: TherapyPlan) => {
     const state: BuyTherapyState = { description: plan.name, amount: plan.amount }
@@ -53,72 +48,49 @@ export default function TherapyListPage() {
               </p>
             )}
 
-            {therapies && therapies.length > 0 && (
-              <div role="table" className="text-sm">
-                {/* Header row — hidden on mobile where each plan renders as a card. */}
-                <div
-                  role="row"
-                  className="hidden border-b border-gray-200 pb-3 text-xs font-medium uppercase tracking-wide text-cora-gray md:grid md:grid-cols-[2fr_1fr_1fr_1fr_auto] md:items-center md:gap-4"
-                >
-                  <span role="columnheader">Therapy Plan Name</span>
-                  <span role="columnheader">Therapy Type</span>
-                  <span role="columnheader" className="text-right">Amount</span>
-                  <span role="columnheader" className="text-right">Therapy Days</span>
-                  <span role="columnheader" className="text-right">Action</span>
-                </div>
-
-                {therapies.map((plan) => (
-                  <div
-                    key={plan.id}
-                    role="row"
-                    className="grid grid-cols-1 gap-2 border-b border-gray-100 py-4 last:border-0 md:grid-cols-[2fr_1fr_1fr_1fr_auto] md:items-center md:gap-4"
-                  >
-                    <span role="cell" className="font-semibold text-cora-navy">
-                      <span className="mr-2 text-xs font-medium uppercase text-cora-gray md:hidden">
-                        Plan:
-                      </span>
-                      {plan.name}
-                    </span>
-
-                    <span role="cell" className="text-cora-gray">
-                      <span className="mr-2 text-xs font-medium uppercase text-cora-gray md:hidden">
-                        Type:
-                      </span>
-                      {plan.type}
-                    </span>
-
-                    <span role="cell" className="font-semibold text-cora-navy md:text-right">
-                      <span className="mr-2 text-xs font-medium uppercase text-cora-gray md:hidden">
-                        Amount:
-                      </span>
-                      {currency.format(plan.amount)}
-                    </span>
-
-                    <span role="cell" className="text-cora-gray md:text-right">
-                      <span className="mr-2 text-xs font-medium uppercase text-cora-gray md:hidden">
-                        Days:
-                      </span>
-                      {plan.days} days
-                    </span>
-
-                    <span role="cell" className="md:text-right">
-                      <button
-                        type="button"
-                        onClick={() => handleBuy(plan)}
-                        className="w-full rounded-full bg-cora-orange px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-orange-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cora-orange focus-visible:ring-offset-2 md:w-auto"
-                      >
-                        Buy
-                      </button>
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {therapies && therapies.length === 0 && (
+            {!isLoading && !isError && therapies.length === 0 && (
               <p className="py-8 text-center text-sm text-cora-gray">
                 No therapy plans available right now.
               </p>
+            )}
+
+            {therapies.length > 0 && (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm">
+                  <thead>
+                    <tr className="border-b border-gray-200 text-xs uppercase tracking-wide text-cora-gray">
+                      <th className="py-2 pr-3 font-medium">Therapy Plan Name</th>
+                      <th className="py-2 pr-3 font-medium">Therapy Type</th>
+                      <th className="py-2 pr-3 text-right font-medium">Amount</th>
+                      <th className="py-2 pr-3 text-right font-medium">Therapy Days</th>
+                      <th className="py-2 text-right font-medium">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {therapies.map((plan) => (
+                      <tr key={plan.id} className="border-b border-gray-100 last:border-0">
+                        <td className="py-3 pr-3 font-semibold text-cora-navy">{plan.name}</td>
+                        <td className="py-3 pr-3 text-cora-gray">{plan.type}</td>
+                        <td className="whitespace-nowrap py-3 pr-3 text-right font-semibold text-cora-navy">
+                          {currency.format(plan.amount)}
+                        </td>
+                        <td className="whitespace-nowrap py-3 pr-3 text-right text-cora-gray">
+                          {plan.days} days
+                        </td>
+                        <td className="py-3 text-right">
+                          <button
+                            type="button"
+                            onClick={() => handleBuy(plan)}
+                            className="rounded-full bg-cora-orange px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-orange-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cora-orange focus-visible:ring-offset-2"
+                          >
+                            Buy
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
         </Container>

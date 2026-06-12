@@ -3,7 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router'
 import ContactPage from './ContactPage'
-import { formSubmissions } from '../data/formSubmitted'
+import { clearSubmissions, getSubmissions } from '@/data/formSubmitted'
 
 // ContactPage renders a Footer that calls useNavigate(), so it must be wrapped
 // in a Router during tests.
@@ -17,9 +17,12 @@ function renderPage() {
 
 describe('ContactPage', () => {
   beforeEach(() => {
-    // Reset the in-memory store between cases (localStorage persistence is
-    // guarded in the module itself).
-    formSubmissions.length = 0
+    // Reset both the in-memory store and the persisted copy between cases so
+    // submissions don't leak from one test to the next. clearSubmissions()
+    // overwrites storage with an empty list; the guarded clear() wipes anything
+    // else when the runtime provides a full localStorage implementation.
+    clearSubmissions()
+    localStorage.clear?.()
   })
 
   it('renders the heading and required form fields', () => {
@@ -57,7 +60,7 @@ describe('ContactPage', () => {
     await user.click(screen.getByRole('button', { name: /submit/i }))
 
     expect(await screen.findByText(/valid email address/i)).toBeInTheDocument()
-    expect(screen.getByText(/numbers only/i)).toBeInTheDocument()
+    expect(screen.getByText(/5- or 9-digit zip code/i)).toBeInTheDocument()
   })
 
   it('saves the submission, shows the thank-you popup, then resets on close', async () => {
@@ -83,9 +86,10 @@ describe('ContactPage', () => {
     ).toBeInTheDocument()
 
     // Submission was persisted with a firstName + timestamp id.
-    expect(formSubmissions).toHaveLength(1)
-    expect(formSubmissions[0].id).toMatch(/^jane-\d+$/)
-    expect(formSubmissions[0].email).toBe('jane@example.com')
+    const saved = getSubmissions()
+    expect(saved).toHaveLength(1)
+    expect(saved[0].id).toMatch(/^jane-\d+$/)
+    expect(saved[0].email).toBe('jane@example.com')
 
     // Closing the popup dismisses it and resets the form for the next user.
     await user.click(screen.getByRole('button', { name: /close/i }))

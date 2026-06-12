@@ -31,11 +31,26 @@ function loadFromStorage(): ContactSubmission[] {
   }
 }
 
-/** Every submission captured so far, newest last. */
-export const formSubmissions: ContactSubmission[] = loadFromStorage()
+// Private in-memory state — hydrated once at module load. Not exported, so
+// callers can't mutate it directly; they go through the functions below.
+const submissions: ContactSubmission[] = loadFromStorage()
 
 /** The data a user actually fills in (everything except the derived fields). */
 export type ContactFormValues = Omit<ContactSubmission, 'id' | 'submittedAt'>
+
+function persist(): void {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions, null, 2))
+  } catch {
+    // Storage may be unavailable (private mode / quota); the in-memory copy
+    // still holds the submissions for the current session.
+  }
+}
+
+/** A read-only snapshot of every submission captured so far, newest last. */
+export function getSubmissions(): readonly ContactSubmission[] {
+  return submissions
+}
 
 /**
  * Append a new submission to the store and persist it. Returns the saved
@@ -51,14 +66,14 @@ export function saveSubmission(values: ContactFormValues): ContactSubmission {
     submittedAt: new Date(timestamp).toISOString(),
   }
 
-  formSubmissions.push(record)
-
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(formSubmissions, null, 2))
-  } catch {
-    // Storage may be unavailable (private mode / quota); the in-memory copy
-    // still holds the submission for the current session.
-  }
+  submissions.push(record)
+  persist()
 
   return record
+}
+
+/** Clear all submissions from memory and storage (used for reset / tests). */
+export function clearSubmissions(): void {
+  submissions.length = 0
+  persist()
 }
