@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
-import type { BuyTherapyState } from './TherapyListPage'
+import type { BuyTherapyState } from '@/types/payment'
 import AnnouncementBar from '../components/layout/AnnouncementBar'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'

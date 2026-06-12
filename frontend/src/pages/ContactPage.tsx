@@ -1,17 +1,17 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import AnnouncementBar from '../components/layout/AnnouncementBar'
-import Footer from '../components/layout/Footer'
-import Header from '../components/layout/Header'
-import Container from '../components/ui/Container'
-import { saveSubmission } from '../data/formSubmitted'
-import type { ContactFormValues } from '../data/formSubmitted'
+import AnnouncementBar from '@/components/layout/AnnouncementBar'
+import Footer from '@/components/layout/Footer'
+import Header from '@/components/layout/Header'
+import Container from '@/components/ui/Container'
+import { saveSubmission } from '@/data/formSubmitted'
+import type { ContactFormValues } from '@/data/formSubmitted'
 
 // Standard, pragmatic email shape (local@domain.tld). Kept permissive enough to
 // accept real-world addresses while rejecting obvious typos.
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-// ZIP / postal code: digits only (US 5-digit or 9-digit ZIP+4 without dash).
-const ZIP_PATTERN = /^\d{4,10}$/
+// US ZIP: exactly 5 digits, or 9 digits for ZIP+4 entered without the dash.
+const ZIP_PATTERN = /^(\d{5}|\d{9})$/
 
 const defaultValues: ContactFormValues = {
   firstName: '',
@@ -30,7 +30,7 @@ export default function ContactPage() {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<ContactFormValues>({ defaultValues, mode: 'onTouched' })
 
   const onSubmit = (data: ContactFormValues) => {
@@ -135,7 +135,7 @@ export default function ContactPage() {
                     required: 'ZIP / Postal code is required',
                     pattern: {
                       value: ZIP_PATTERN,
-                      message: 'Numbers only',
+                      message: 'Enter a 5- or 9-digit ZIP code',
                     },
                   })}
                 />
@@ -181,8 +181,7 @@ export default function ContactPage() {
 
             <button
               type="submit"
-              disabled={isSubmitting}
-              className="inline-flex items-center justify-center rounded-full bg-cora-navy px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-cora-blue focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cora-blue focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex items-center justify-center rounded-full bg-cora-navy px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-cora-blue focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cora-blue focus-visible:ring-offset-2"
             >
               Submit
             </button>
@@ -235,6 +234,45 @@ interface ThankYouModalProps {
 }
 
 function ThankYouModal({ onClose }: ThankYouModalProps) {
+  const dialogRef = useRef<HTMLDivElement>(null)
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    // Remember what was focused so we can restore it when the modal closes.
+    const previouslyFocused = document.activeElement as HTMLElement | null
+    closeButtonRef.current?.focus()
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose()
+        return
+      }
+      if (e.key !== 'Tab') return
+
+      // Keep focus inside the dialog by cycling at the edges.
+      const focusables = dialogRef.current?.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      )
+      if (!focusables || focusables.length === 0) return
+      const first = focusables[0]
+      const last = focusables[focusables.length - 1]
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      previouslyFocused?.focus()
+    }
+  }, [onClose])
+
   return (
     <div
       className="fixed inset-0 z-50 grid place-items-center bg-black/50 p-4"
@@ -242,7 +280,10 @@ function ThankYouModal({ onClose }: ThankYouModalProps) {
       aria-modal="true"
       aria-labelledby="thank-you-title"
     >
-      <div className="w-full max-w-md rounded-2xl bg-white p-8 text-center shadow-2xl">
+      <div
+        ref={dialogRef}
+        className="w-full max-w-md rounded-2xl bg-white p-8 text-center shadow-2xl"
+      >
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-green-100">
           <svg
             className="h-7 w-7 text-green-600"
@@ -258,6 +299,7 @@ function ThankYouModal({ onClose }: ThankYouModalProps) {
           Thank you for Contacting us. Our team will reach you soon.
         </h2>
         <button
+          ref={closeButtonRef}
           type="button"
           onClick={onClose}
           className="mt-6 inline-flex items-center justify-center rounded-full bg-cora-orange px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-orange-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cora-orange focus-visible:ring-offset-2"
